@@ -5,14 +5,12 @@ RSpec.describe User, type: :model do
     @user = User.new(name: 'Example User', email: 'user@example.com',
                      password: 'foobarbaz', password_confirmation: 'foobarbaz')
   end
-
   describe 'validations' do
     context 'when attributes are valid' do
       it 'is valid with valid attributes' do
         expect(@user).to be_valid
       end
     end
-
 
     context 'when attributes are invalid' do
       it 'is invalid without a name' do
@@ -33,6 +31,14 @@ RSpec.describe User, type: :model do
       it 'is invalid with an email that is too long' do
         @user.email = 'a' * 244 + '@example.com'
         expect(@user).not_to be_valid
+      end
+
+      it 'check valid email addresses' do
+        valid_addresses = %w[user@exmple.com USER@foo.COM A_US-ER@foo.bar.org first.last@foo.jp alice+bob@baz.cn]
+        valid_addresses.each do |valid_address|
+          @user.email = valid_address
+          expect(@user).to be_valid
+        end
       end
 
       it 'rejects invalid email addresses' do
@@ -68,59 +74,59 @@ RSpec.describe User, type: :model do
     end
   end
 
-  # describe 'micropost associations' do
-  #   @user.save
-  #   @user.microposts.create!(content: 'Lorem ipsum')
-  #   it 'destroys associated microposts when user is destroyed' do
-  #     expect { @user.destroy }.to change(Micropost, :count).by(-1)
-  #     @user.destroy
-  #   end
-  # end
+  describe 'micropost associations' do
+    it 'destroys associated microposts when user is destroyed' do
+      @user.save
+      @user.microposts.create!(content: 'Lorem ipsum')
+      expect { @user.destroy }.to change(Micropost, :count).by(-1)
+      @user.destroy
+    end
+  end
 
-  # describe 'following' do
-  #   let(:michael) { create(:user) }
-  #   let(:archer) { create(:user) }
-  #   let(:lana) { create(:user, :with_microposts) }
+  describe 'following' do
+    michael = FactoryBot.create(:michael)
+    archer = FactoryBot.create(:archer)
+    lana = FactoryBot.create(:lana)
 
-  #   context 'when following users' do
-  #     it 'follows and unfollows a user' do
-  #       expect(michael.following?(archer)).to be_falsey
+    context 'when following users' do
+      it 'follows and unfollows a user' do
+        expect(michael.following?(archer)).to be_falsey
 
-  #       michael.follow(archer)
-  #       expect(michael.following?(archer)).to be_truthy
-  #       expect(archer.followers).to include(michael)
+        michael.follow(archer)
+        expect(michael.following?(archer)).to be_truthy
+        expect(archer.followers).to include(michael)
 
-  #       michael.unfollow(archer)
-  #       expect(michael.following?(archer)).to be_falsey
-  #     end
-  #     it 'cannot follow self' do
-  #       michael.follow(michael)
-  #       expect(michael.following?(michael)).to be_falsey
-  #     end
-  #   end
+        michael.unfollow(archer)
+        expect(michael.following?(archer)).to be_falsey
+      end
+      it 'cannot follow self' do
+        michael.follow(michael)
+        expect(michael.following?(michael)).to be_falsey
+      end
+    end
 
-  #   describe '#feed' do
-  #     before do
-  #       michael.follow(lana)
-  #     end
+    describe 'feed' do
+      before do
+        michael.follow(lana)
+      end
 
-  #     it 'includes own posts' do
-  #       michael.microposts.each do |post_self|
-  #         expect(michael.feed).to include(post_self)
-  #       end
-  #     end
+      it 'includes own posts' do
+        michael.microposts.each do |post_self|
+          expect(michael.feed).to include(post_self)
+        end
+      end
 
-  #     it 'includes followed user posts' do
-  #       lana.microposts.each do |post_following|
-  #         expect(michael.feed).to include(post_following)
-  #       end
-  #     end
+      it 'includes followed user posts' do
+        lana.microposts.each do |post_following|
+          expect(michael.feed).to include(post_following)
+        end
+      end
 
-  #     it 'excludes unfollowed user posts' do
-  #       archer.microposts.each do |post_unfollowed|
-  #         expect(michael.feed).not_to include(post_unfollowed)
-  #       end
-  #     end
-  #   end
-  # end
+      it 'excludes unfollowed user posts' do
+        archer.microposts.each do |post_unfollowed|
+          expect(michael.feed).not_to include(post_unfollowed)
+        end
+      end
+    end
+  end
 end
