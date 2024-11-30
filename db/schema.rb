@@ -39,6 +39,16 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_19_100428) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "follow_users", force: :cascade do |t|
+    t.integer "follower_id"
+    t.integer "followee_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["followee_id"], name: "index_follow_users_on_followee_id"
+    t.index ["follower_id", "followee_id"], name: "index_follow_users_on_follower_id_and_followee_id", unique: true
+    t.index ["follower_id"], name: "index_follow_users_on_follower_id"
+  end
+
   create_table "posts", force: :cascade do |t|
     t.text "content"
     t.integer "user_id", null: false
@@ -46,16 +56,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_19_100428) do
     t.datetime "updated_at", null: false
     t.index ["user_id", "created_at"], name: "index_posts_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_posts_on_user_id"
-  end
-
-  create_table "relationships", force: :cascade do |t|
-    t.integer "follower_id"
-    t.integer "followee_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["followee_id"], name: "index_relationships_on_followee_id"
-    t.index ["follower_id", "followee_id"], name: "index_relationships_on_follower_id_and_followee_id", unique: true
-    t.index ["follower_id"], name: "index_relationships_on_follower_id"
   end
 
   create_table "users", force: :cascade do |t|
