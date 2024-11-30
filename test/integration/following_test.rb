@@ -33,14 +33,14 @@ end
 class FollowTest < Following
   test 'should follow a user the standard way' do
     assert_difference '@user.followees.count', 1 do
-      post relationships_path, params: { followee_id: @other.id }
+      post follow_users_path, params: { followee_id: @other.id }
     end
     assert_redirected_to @other
   end
 
   test 'should follow a user with Hotwire' do
     assert_difference '@user.followees.count', 1 do
-      post relationships_path(format: :turbo_stream),
+      post follow_users_path(format: :turbo_stream),
            params: { followee_id: @other.id }
     end
   end
@@ -50,14 +50,14 @@ class Unfollow < Following
   def setup
     super
     @user.follow(@other)
-    @relationship = @user.active_relationships.find_by(followee_id: @other.id)
+    @follow_user = @user.active_relationships.find_by(followee_id: @other.id)
   end
 end
 
 class UnfollowTest < Unfollow
   test 'should unfollow a user the standard way' do
     assert_difference '@user.followees.count', -1 do
-      delete relationship_path(@relationship)
+      delete follow_user_path(@follow_user)
     end
     assert_response :see_other
     assert_redirected_to @other
@@ -65,7 +65,7 @@ class UnfollowTest < Unfollow
 
   test 'should unfollow a user with Hotwire' do
     assert_difference '@user.followees.count', -1 do
-      delete relationship_path(@relationship, format: :turbo_stream)
+      delete follow_user_path(@follow_user, format: :turbo_stream)
     end
   end
 end

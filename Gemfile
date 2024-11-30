@@ -14,7 +14,11 @@ gem 'importmap-rails', '1.1.5'
 gem 'jbuilder',        '2.11.5'
 gem 'puma',            '5.6.8'
 gem 'rails',           '7.0.4.3'
-gem 'sassc-rails',     '2.1.2'
+gem 'rubocop', '~> 1.69', require: false
+gem 'rubocop-performance', require: false
+gem 'rubocop-rails', require: false
+gem 'rubocop-rspec'
+gem 'sassc-rails', '2.1.2'
 gem 'sprockets-rails', '3.4.2'
 gem 'sqlite3', '1.6.1'
 gem 'stimulus-rails', '1.2.1'
