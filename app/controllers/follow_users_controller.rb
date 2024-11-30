@@ -1,4 +1,4 @@
-class RelationshipsController < ApplicationController
+class FollowUsersController < ApplicationController
   before_action :logged_in_user
 
   def create
@@ -11,7 +11,7 @@ class RelationshipsController < ApplicationController
   end
 
   def destroy
-    @user = Relationship.find(params[:id]).followee
+    @user = FollowUser.find(params[:id]).followee
     current_user.unfollow(@user)
     respond_to do |format|
       format.html { redirect_to @user, status: :see_other }

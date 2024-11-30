@@ -1,9 +1,31 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  id                :integer          not null, primary key
+#  activated         :boolean          default(FALSE)
+#  activated_at      :datetime
+#  activation_digest :string
+#  admin             :boolean          default(FALSE)
+#  email             :string
+#  name              :string
+#  password_digest   :string
+#  remember_digest   :string
+#  reset_digest      :string
+#  reset_sent_at     :datetime
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#
+# Indexes
+#
+#  index_users_on_email  (email) UNIQUE
+#
 class User < ApplicationRecord
-  has_many :microposts, dependent: :destroy
-  has_many :active_relationships,  class_name: 'Relationship',
+  has_many :posts, dependent: :destroy
+  has_many :active_relationships,  class_name: 'FollowUser',
                                    foreign_key: 'follower_id',
                                    dependent: :destroy
-  has_many :passive_relationships, class_name: 'Relationship',
+  has_many :passive_relationships, class_name: 'FollowUser',
                                    foreign_key: 'followee_id',
                                    dependent: :destroy
   has_many :followees, through: :active_relationships
@@ -92,11 +114,11 @@ class User < ApplicationRecord
 
   # ユーザーのステータスフィードを返す
   def feed
-    followees_ids = "SELECT followee_id FROM relationships
+    followees_ids = "SELECT followee_id FROM follow_users
                      WHERE  follower_id = :user_id"
-    Micropost.where("user_id IN (#{followees_ids})
+    Post.where("user_id IN (#{followees_ids})
                      OR user_id = :user_id", user_id: id)
-             .includes(:user, image_attachment: :blob)
+        .includes(:user, image_attachment: :blob)
   end
 
   # ユーザーをフォローする
