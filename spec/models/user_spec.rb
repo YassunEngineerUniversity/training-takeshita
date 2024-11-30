@@ -74,11 +74,11 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe 'micropost associations' do
-    it 'destroys associated microposts when user is destroyed' do
+  describe 'post associations' do
+    it 'destroys associated posts when user is destroyed' do
       @user.save
-      @user.microposts.create!(content: 'Lorem ipsum')
-      expect { @user.destroy }.to change(Micropost, :count).by(-1)
+      @user.posts.create!(content: 'Lorem ipsum')
+      expect { @user.destroy }.to change(Post, :count).by(-1)
       @user.destroy
     end
   end
@@ -111,19 +111,19 @@ RSpec.describe User, type: :model do
       end
 
       it 'includes own posts' do
-        michael.microposts.each do |post_self|
+        michael.posts.each do |post_self|
           expect(michael.feed).to include(post_self)
         end
       end
 
       it 'includes followed user posts' do
-        lana.microposts.each do |post_following|
+        lana.posts.each do |post_following|
           expect(michael.feed).to include(post_following)
         end
       end
 
       it 'excludes unfollowed user posts' do
-        archer.microposts.each do |post_unfollowed|
+        archer.posts.each do |post_unfollowed|
           expect(michael.feed).not_to include(post_unfollowed)
         end
       end

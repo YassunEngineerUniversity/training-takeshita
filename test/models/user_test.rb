@@ -58,10 +58,10 @@ class UserTest < ActiveSupport::TestCase
   test 'authenticated? should return false for a user with nil digest' do
     assert_not @user.authenticated?(:remember, '')
   end
-  test 'associated microposts should be destroyed' do
+  test 'associated posts should be destroyed' do
     @user.save
-    @user.microposts.create!(content: 'Lorem ipsum')
-    assert_difference 'Micropost.count', -1 do
+    @user.posts.create!(content: 'Lorem ipsum')
+    assert_difference 'Post.count', -1 do
       @user.destroy
     end
   end
@@ -83,15 +83,15 @@ class UserTest < ActiveSupport::TestCase
     archer  = users(:archer)
     lana    = users(:lana)
     # フォローしているユーザーの投稿を確認
-    lana.microposts.each do |post_following|
+    lana.posts.each do |post_following|
       assert michael.feed.include?(post_following)
     end
     # フォロワーがいるユーザー自身の投稿を確認
-    michael.microposts.each do |post_self|
+    michael.posts.each do |post_self|
       assert michael.feed.include?(post_self)
     end
     # フォローしていないユーザーの投稿を確認
-    archer.microposts.each do |post_unfollowed|
+    archer.posts.each do |post_unfollowed|
       assert_not michael.feed.include?(post_unfollowed)
     end
   end
