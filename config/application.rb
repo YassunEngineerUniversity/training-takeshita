@@ -8,9 +8,15 @@ Bundler.require(*Rails.groups)
 
 module SampleApp
   class Application < Rails::Application
+    config.api_only = true
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
     config.active_storage.variant_processor = :mini_magick
+
+    config.action_dispatch.cookies_same_site_protection = :none
+
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore
 
     # Configuration for the application, engines, and railties goes here.
     #
