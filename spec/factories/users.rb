@@ -30,6 +30,16 @@
 # end
 
 FactoryBot.define do
+  factory :user do
+    name { Faker::Name.name }
+    email { Faker::Internet.free_email }
+    password_digest { User.digest('password') }
+    activated { true }
+    activated_at { Time.zone.now }
+  end
+end
+
+FactoryBot.define do
   factory :michael, class: User do
     name { 'Michael Example' }
     email { 'michael@example.com' }
