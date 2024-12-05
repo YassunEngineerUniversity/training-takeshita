@@ -46,6 +46,7 @@ RSpec.describe 'Api::Posts', type: :request do
       end
     end
   end
+
   describe 'GET /api/posts/:id' do
     let(:test_post) { create(:post, user: user) }
 
@@ -77,5 +78,4 @@ RSpec.describe 'Api::Posts', type: :request do
       end
     end
   end
-
 end
