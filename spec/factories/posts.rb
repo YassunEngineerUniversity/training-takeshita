@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :post do
-    content { 'test' }
+    content { Faker::Lorem.sentence }
   end
 
   factory :orange, class: Post do
