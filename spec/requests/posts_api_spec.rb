@@ -13,6 +13,26 @@ RSpec.describe 'Api::Posts', type: :request do
         post '/api/posts', params: post_params
         expect(response).to have_http_status(:unauthorized)
       end
+
+      it 'GET /api/postsが401エラーを返すこと' do
+        get '/api/posts'
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      # it 'POST /api/posts/:id/likeが401エラーを返すこと' do
+      #   post "/api/posts/#{existing_post.id}/like"
+      #   expect(response).to have_http_status(:unauthorized)
+      # end
+
+      # it 'DELETE /api/posts/:id/likeが401エラーを返すこと' do
+      #   delete "/api/posts/#{existing_post.id}/like"
+      #   expect(response).to have_http_status(:unauthorized)
+      # end
+
+      # it 'POST /api/posts/:id/commentsが401エラーを返すこと' do
+      #   post "/api/posts/#{existing_post.id}/comments", params: { content: 'コメント' }
+      #   expect(response).to have_http_status(:unauthorized)
+      # end
     end
   end
 
@@ -46,6 +66,27 @@ RSpec.describe 'Api::Posts', type: :request do
       end
     end
   end
+
+  describe 'GET /api/posts' do
+    before do
+      post '/api/login', params: { session: { email: user.email, password: 'password' } }
+      # post '/api/posts', params: { post: FactoryBot.build(:post) }
+      post '/api/posts', params: { post: { content: 'test1' } }
+      post '/api/posts', params: { post: { content: 'test2' } }
+      # create_list(:post, 3, user: user)
+      # create_list(:post, 2, user: another_user)
+    end
+
+    it '全ての投稿を取得できること' do
+      get '/api/posts'
+
+      expect(response).to have_http_status(:ok)
+      response_body = JSON.parse(response.body)
+      binding.pry
+      expect(response_body.size).to eq 2
+    end
+  end
+
   describe 'GET /api/posts/:id' do
     let(:test_post) { create(:post, user: user) }
 
@@ -59,11 +100,9 @@ RSpec.describe 'Api::Posts', type: :request do
     context 'ログインしている場合' do
       # ログイン処理
       before do
-        binding.pry
         post '/api/login', params: { session: { email: user.email, password: 'password' } }
       end
       it 'GET /api/posts/:idが403エラーを返すこと' do
-        binding.pry
         get '/api/posts/1000'
         expect(response).to have_http_status(:not_found)
       end
@@ -78,4 +117,42 @@ RSpec.describe 'Api::Posts', type: :request do
     end
   end
 
+  # describe "POST /api/posts/:id/like" do
+  #   let(:post) { create(:post, user: another_user) }
+
+  #   it "投稿にいいねできること" do
+  #     expect {
+  #       post "/api/posts/#{post.id}/like"
+  #     }.to change(Like, :count).by(1)
+
+  #     expect(response).to have_http_status(:created)
+  #   end
+
+  #   context "同じ投稿に2回いいねした場合" do
+  #     before do
+  #       create(:like, user: user, post: post)
+  #     end
+
+  #     it "2回目のいいねは失敗すること" do
+  #       expect {
+  #         post "/api/posts/#{post.id}/like"
+  #       }.not_to change(Like, :count)
+
+  #       expect(response).to have_http_status(:unprocessable_entity)
+  #     end
+  #   end
+  # end
+
+  # describe "DELETE /api/posts/:id/like" do
+  #   let(:post) { create(:post, user: another_user) }
+  #   let!(:like) { create(:like, user: user, post: post) }
+
+  #   it "いいねを解除できること" do
+  #     expect {
+  #       delete "/api/posts/#{post.id}/like"
+  #     }.to change(Like, :count).by(-1)
+
+  #     expect(response).to have_http_status(:ok)
+  #   end
+  # end
 end
