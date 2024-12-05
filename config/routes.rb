@@ -21,5 +21,6 @@ Rails.application.routes.draw do
     resources :posts, only: %i[create destroy]
     resources :follow_users, only: %i[create destroy]
     get '/posts', to: 'static_pages#home'
+    resources :posts, only: %i[index show create destroy]
   end
 end

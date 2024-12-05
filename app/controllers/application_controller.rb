@@ -8,8 +8,6 @@ class ApplicationController < ActionController::API
   def logged_in_user
     return if logged_in?
 
-    store_location
-    flash[:danger] = 'Please log in.'
-    redirect_to login_url, status: :see_other
+    render json: { error: 'Unauthorized' }, status: :unauthorized
   end
 end
