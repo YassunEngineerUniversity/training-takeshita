@@ -13,6 +13,7 @@ RSpec.describe 'Api::Posts', type: :request do
         post '/api/posts', params: post_params
         expect(response).to have_http_status(:unauthorized)
       end
+    end
   end
 
   describe 'POST /api/posts' do
@@ -42,6 +43,38 @@ RSpec.describe 'Api::Posts', type: :request do
         end.not_to change(Post, :count)
 
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
+
+  describe 'GET /api/posts/:id' do
+    let(:test_post) { create(:post, user: user) }
+
+    context 'ログインしていない場合' do
+      it 'GET /api/posts/:idが401エラーを返すこと' do
+        get "/api/posts/#{test_post.id}"
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context 'ログインしている場合' do
+      # ログイン処理
+      before do
+        binding.pry
+        post '/api/login', params: { session: { email: user.email, password: 'password' } }
+      end
+      it 'GET /api/posts/:idが403エラーを返すこと' do
+        binding.pry
+        get '/api/posts/1000'
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it '特定の投稿を取得できること' do
+        get "/api/posts/#{test_post.id}"
+
+        expect(response).to have_http_status(:ok)
+        response_body = JSON.parse(response.body)
+        expect(response_body['content']).to eq test_post.content
       end
     end
   end
