@@ -12,6 +12,12 @@ Rails.application.routes.draw do
         delete '/follow', to: 'follow_users#destroy'
       end
     end
+    resources :posts do
+      member do
+        post 'like', to: 'likes#create'
+        # delete 'like', to: 'likes#destroy'
+      end
+    end
     resources :users
     resources :account_activations, only: [:edit]
     resources :password_resets,     only: %i[new create edit update]

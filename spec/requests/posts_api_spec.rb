@@ -7,7 +7,6 @@ RSpec.describe 'Api::Posts', type: :request do
   describe '認証のないリクエスト' do
     context 'ログインしていない状態' do
       let(:post_params) { { content: 'テスト投稿' } }
-      let(:existing_post) { { content: 'テスト' } }
 
       it 'POST /api/postsが401エラーを返すこと' do
         post '/api/posts', params: post_params
@@ -18,16 +17,6 @@ RSpec.describe 'Api::Posts', type: :request do
         get '/api/posts'
         expect(response).to have_http_status(:unauthorized)
       end
-
-      # it 'POST /api/posts/:id/likeが401エラーを返すこと' do
-      #   post "/api/posts/#{existing_post.id}/like"
-      #   expect(response).to have_http_status(:unauthorized)
-      # end
-
-      # it 'DELETE /api/posts/:id/likeが401エラーを返すこと' do
-      #   delete "/api/posts/#{existing_post.id}/like"
-      #   expect(response).to have_http_status(:unauthorized)
-      # end
 
       # it 'POST /api/posts/:id/commentsが401エラーを返すこと' do
       #   post "/api/posts/#{existing_post.id}/comments", params: { content: 'コメント' }
@@ -115,43 +104,4 @@ RSpec.describe 'Api::Posts', type: :request do
       end
     end
   end
-
-  # describe "POST /api/posts/:id/like" do
-  #   let(:post) { create(:post, user: another_user) }
-
-  #   it "投稿にいいねできること" do
-  #     expect {
-  #       post "/api/posts/#{post.id}/like"
-  #     }.to change(Like, :count).by(1)
-
-  #     expect(response).to have_http_status(:created)
-  #   end
-
-  #   context "同じ投稿に2回いいねした場合" do
-  #     before do
-  #       create(:like, user: user, post: post)
-  #     end
-
-  #     it "2回目のいいねは失敗すること" do
-  #       expect {
-  #         post "/api/posts/#{post.id}/like"
-  #       }.not_to change(Like, :count)
-
-  #       expect(response).to have_http_status(:unprocessable_entity)
-  #     end
-  #   end
-  # end
-
-  # describe "DELETE /api/posts/:id/like" do
-  #   let(:post) { create(:post, user: another_user) }
-  #   let!(:like) { create(:like, user: user, post: post) }
-
-  #   it "いいねを解除できること" do
-  #     expect {
-  #       delete "/api/posts/#{post.id}/like"
-  #     }.to change(Like, :count).by(-1)
-
-  #     expect(response).to have_http_status(:ok)
-  #   end
-  # end
 end
