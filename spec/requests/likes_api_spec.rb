@@ -12,10 +12,10 @@ RSpec.describe 'Api::Posts', type: :request do
         expect(response).to have_http_status(:unauthorized)
       end
 
-      # it 'DELETE /api/posts/:id/likeが401エラーを返すこと' do
-      #   delete "/api/posts/#{existing_post.id}/like"
-      #   expect(response).to have_http_status(:unauthorized)
-      # end
+      it 'DELETE /api/posts/:id/likeが401エラーを返すこと' do
+        delete "/api/posts/#{existing_post.id}/like"
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
   end
 
@@ -49,16 +49,28 @@ RSpec.describe 'Api::Posts', type: :request do
     end
   end
 
-  # describe 'DELETE /api/posts/:id/like' do
-  #   let(:existing_post) { FactoryBot.create(:post) }
-  #   let!(:like) { create(:like, user: user, post: existing_post) }
+  describe 'DELETE /api/posts/:id/like' do
+    let(:existing_post) { FactoryBot.create(:post) }
+    # ログイン処理
+    before do
+      post '/api/login', params: { session: { email: user.email, password: 'password' } }
+    end
 
-  #   it 'いいねを解除できること' do
-  #     expect do
-  #       delete "/api/posts/#{existing_post.id}/like"
-  #     end.to change(Like, :count).by(-1)
+    it 'いいねを解除できること' do
+      create(:like, user: user, post: existing_post)
+      expect do
+        delete "/api/posts/#{existing_post.id}/like"
+      end.to change(Like, :count).by(-1)
 
-  #     expect(response).to have_http_status(:ok)
-  #   end
-  # end
+      expect(response).to have_http_status(:see_other)
+    end
+
+    it 'いいねをしていない投稿への「いいね解除」はできないこと' do
+      expect do
+        delete "/api/posts/#{existing_post.id}/like"
+      end.not_to change(Like, :count)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
 end
