@@ -1,8 +1,6 @@
 module Api
   class LikesController < ApplicationController
-    before_action :logged_in_user, only: %i[create]
-    # before_action :logged_in_user, only: %i[create destroy]
-    # before_action :correct_user,   only: :destroy
+    before_action :logged_in_user, only: %i[create destroy]
 
     def create
       if current_user.likes.find_by(id: params[:id]).nil?
@@ -19,19 +17,17 @@ module Api
       end
     end
 
-    # def destroy
-    #   if @like.destroy
-    #     head :see_other
-    #   else
-    #     render json: @like.errors, status: :unprocessable_entity
-    #   end
-    # end
-
-    # private
-
-    # def correct_user
-    #   @like = current_user.likes.find_by(id: params[:id])
-    #   render status: :see_other if @like.nil?
-    # end
+    def destroy
+      if current_user.likes.find_by(id: params[:id])
+        @like = current_user.likes.find_by(id: params[:id])
+        if @like.destroy
+          head :see_other
+        else
+          render json: @like.errors, status: :unprocessable_entity
+        end
+      else
+        head :unprocessable_entity
+      end
+    end
   end
 end
