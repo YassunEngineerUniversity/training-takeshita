@@ -106,47 +106,47 @@ RSpec.describe User, type: :model do
   end
 
   describe 'following' do
-    michael = FactoryBot.create(:michael)
-    archer = FactoryBot.create(:archer)
-    lana = FactoryBot.create(:lana)
+    user1 = FactoryBot.create(:user)
+    user2 = FactoryBot.create(:user)
+    user3 = FactoryBot.create(:user)
 
     context 'when following users' do
       it 'follows and unfollows a user' do
-        expect(michael.following?(archer)).to be_falsey
+        expect(user1.following?(user2)).to be_falsey
 
-        michael.follow(archer)
-        expect(michael.following?(archer)).to be_truthy
-        expect(archer.followers).to include(michael)
+        user1.follow(user2)
+        expect(user1.following?(user2)).to be_truthy
+        expect(user2.followers).to include(user1)
 
-        michael.unfollow(archer)
-        expect(michael.following?(archer)).to be_falsey
+        user1.unfollow(user2)
+        expect(user1.following?(user2)).to be_falsey
       end
       it 'cannot follow self' do
-        michael.follow(michael)
-        expect(michael.following?(michael)).to be_falsey
+        user1.follow(user1)
+        expect(user1.following?(user1)).to be_falsey
       end
     end
 
     describe 'feed' do
       before do
-        michael.follow(lana)
+        user1.follow(user3)
       end
 
       it 'includes own posts' do
-        michael.posts.each do |post_self|
-          expect(michael.feed).to include(post_self)
+        user1.posts.each do |post_self|
+          expect(user1.feed).to include(post_self)
         end
       end
 
       it 'includes followed user posts' do
-        lana.posts.each do |post_following|
-          expect(michael.feed).to include(post_following)
+        user3.posts.each do |post_following|
+          expect(user1.feed).to include(post_following)
         end
       end
 
       it 'excludes unfollowed user posts' do
-        archer.posts.each do |post_unfollowed|
-          expect(michael.feed).not_to include(post_unfollowed)
+        user2.posts.each do |post_unfollowed|
+          expect(user1.feed).not_to include(post_unfollowed)
         end
       end
     end
