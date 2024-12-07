@@ -21,7 +21,7 @@ require 'rails_helper'
 
 RSpec.describe Poste: :model do
   before do
-    @user = FactoryBot.create(:michael)
+    @user = FactoryBot.create(:user)
     @post = @user.posts.build(content: 'Lorem ipsum')
   end
 

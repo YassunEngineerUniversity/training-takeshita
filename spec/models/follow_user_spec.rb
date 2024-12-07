@@ -18,8 +18,8 @@ require 'rails_helper'
 
 RSpec.describe FollowUser, type: :follow_user do
   before do
-    @follow_user = FollowUser.new(follower_id: FactoryBot.create(:michael).id,
-                                     followee_id: FactoryBot.create(:archer).id)
+    @follow_user = FollowUser.new(follower_id: FactoryBot.create(:user).id,
+                                  followee_id: FactoryBot.create(:user).id)
   end
   describe 'validations' do
     it 'is valid with valid attributes' do

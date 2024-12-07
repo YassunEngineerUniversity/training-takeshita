@@ -82,7 +82,6 @@ RSpec.describe 'Api::Posts', type: :request do
 
       expect(response).to have_http_status(:ok)
       response_body = JSON.parse(response.body)
-      binding.pry
       expect(response_body.size).to eq 2
     end
   end
