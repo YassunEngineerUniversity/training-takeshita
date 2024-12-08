@@ -16,6 +16,8 @@ Rails.application.routes.draw do
       member do
         post 'like', to: 'likes#create'
         delete 'like', to: 'likes#destroy'
+        post 'comments', to: 'comments#create'
+        delete 'comments', to: 'comments#destroy'
       end
     end
     resources :users

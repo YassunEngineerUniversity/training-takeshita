@@ -17,11 +17,6 @@ RSpec.describe 'Api::Posts', type: :request do
         get '/api/posts'
         expect(response).to have_http_status(:unauthorized)
       end
-
-      # it 'POST /api/posts/:id/commentsが401エラーを返すこと' do
-      #   post "/api/posts/#{existing_post.id}/comments", params: { content: 'コメント' }
-      #   expect(response).to have_http_status(:unauthorized)
-      # end
     end
   end
 
