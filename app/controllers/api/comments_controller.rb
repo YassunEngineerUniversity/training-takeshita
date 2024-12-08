@@ -13,14 +13,14 @@ module Api
       # render json: params
     end
 
-    def destroy
-      @comment = current_user.comments.find_by(id: params[:id])
-      if @comment && @comment.destroy
-        head :see_other
-      else
-        render json: { error: '無効なリクエスト' }, status: :unprocessable_entity
-      end
-    end
+    # def destroy
+    #   @comment = current_user.comments.find_by(id: params[:id])
+    #   if @comment && @comment.destroy
+    #     head :see_other
+    #   else
+    #     render json: { error: '無効なリクエスト' }, status: :unprocessable_entity
+    #   end
+    # end
 
     private
 
