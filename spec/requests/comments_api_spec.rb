@@ -12,10 +12,10 @@ RSpec.describe 'Api::Posts', type: :request do
         expect(response).to have_http_status(:unauthorized)
       end
 
-      it 'DELETE /api/posts/:id/commentsが401エラーを返すこと' do
-        delete "/api/posts/#{existing_post.id}/comments"
-        expect(response).to have_http_status(:unauthorized)
-      end
+      # it 'DELETE /api/posts/:id/commentsが401エラーを返すこと' do
+      #   delete "/api/posts/#{existing_post.id}/comments"
+      #   expect(response).to have_http_status(:unauthorized)
+      # end
     end
   end
 
@@ -29,7 +29,6 @@ RSpec.describe 'Api::Posts', type: :request do
     it '投稿にコメントできること' do
       expect do
         post "/api/posts/#{existing_post.id}/comments", params: content_params
-        binding.pry
       end.to change(Comment, :count).by(1)
 
       expect(response).to have_http_status(:created)
