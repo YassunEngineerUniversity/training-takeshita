@@ -3,12 +3,17 @@ module Api
     before_action :logged_in_user, only: %i[create destroy]
 
     def create
-      @post = Post.find(params[:id])
-      @like = @post.likes.build(user: current_user)
-      if @like.save
-        head :created
+      if current_user.likes.find_by(id: params[:id]).nil?
+        @post = Post.find(params[:id])
+        @like = @post.likes.build(user: current_user)
+        if @like.save
+          head :created
+        else
+          render json: @like.errors, status: :unprocessable_entity
+        end
+
       else
-        render json: @like.errors, status: :unprocessable_entity
+        head :unprocessable_entity
       end
     end
 
