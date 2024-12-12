@@ -4,7 +4,8 @@ module Api
     before_action :correct_user,   only: :destroy
 
     def index
-      @feed_items = current_user.feed.paginate(page: params[:page])
+      # @feed_items = current_user.feed.paginate(page: params[:page]) # will_paginate
+      @feed_items = current_user.feed.page(params[:page]) # kaminari
       render json: @feed_items, status: :ok
     end
 

@@ -5,12 +5,14 @@ module Api
     before_action :admin_user,     only: :destroy
 
     def index
-      @users = User.paginate(page: params[:page])
+      # @users = User.paginate(page: params[:page]) # will_paginate
+      @users = User.page(params[:page]) # kaminari
     end
 
     def show
       @user = User.find(params[:id])
-      @posts = @user.posts.paginate(page: params[:page])
+      # @posts = @user.posts.paginate(page: params[:page]) # will_paginate
+      @posts = @user.posts.page(params[:page]) # kaminari
       render json: { user_info: { name: @user.name, registration_date: @user.created_at }, posts_info: @posts },
              status: :ok
     end
@@ -53,14 +55,16 @@ module Api
     def followees
       @title = 'followees'
       @user  = User.find(params[:id])
-      @users = @user.followees.paginate(page: params[:page])
+      # @users = @user.followees.paginate(page: params[:page]) # will_paginate
+      @users = @user.followees.page(params[:page]) # kaminari
       render 'show_follow'
     end
 
     def followers
       @title = 'Followers'
-      @user  = User.find(params[:id])
-      @users = @user.followers.paginate(page: params[:page])
+      # @user  = User.find(params[:id])
+      # @users = @user.followers.paginate(page: params[:page]) # will_paginate
+      @users = @user.followers.page(params[:page]) # kaminari
       render 'show_follow'
     end
 

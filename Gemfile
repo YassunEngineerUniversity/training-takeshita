@@ -13,9 +13,10 @@ gem 'faker', '2.21.0'
 gem 'image_processing', '1.12.2'
 gem 'importmap-rails', '1.1.5'
 gem 'jbuilder',        '2.11.5'
-gem 'puma',            '5.6.8'
+gem 'kaminari'
+gem 'puma', '5.6.8'
 gem 'rack-cors'
-gem 'rails',           '7.0.4.3'
+gem 'rails', '7.0.4.3'
 gem 'rubocop', '~> 1.69', require: false
 gem 'rubocop-performance', require: false
 gem 'rubocop-rails', require: false
