@@ -70,10 +70,13 @@ Rails.application.configure do
 
   config.debug_exception_response_format = :api
 
-  pf_domain = ENV['GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN']
-  config.action_dispatch.default_headers = {
-    'X-Frame-Options' => "ALLOW-FROM #{pf_domain}"
-  }
+  # pf_domain = ENV['GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN']
+  # config.action_dispatch.default_headers = {
+  #   'X-Frame-Options' => "ALLOW-FROM #{pf_domain}"
+  # }
+
+  # config.session_store :cookie_store, key: '_rails-mysession', expire_after: 20.minutes
+
 
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
@@ -85,8 +88,8 @@ Rails.application.configure do
   # config.action_cable.disable_request_forgery_protection = true
 
   # Allow requests from our preview domain.
-  pf_host = "#{ENV['CODESPACE_NAME']}-3000.#{pf_domain}"
-  config.hosts << pf_host
+  # pf_host = "#{ENV['CODESPACE_NAME']}-3000.#{pf_domain}"
+  # config.hosts << pf_host
 
-  config.action_cable.allowed_request_origins = ["https://#{pf_host}"]
+  # config.action_cable.allowed_request_origins = ["https://#{pf_host}"]
 end

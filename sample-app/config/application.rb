@@ -16,7 +16,7 @@ module SampleApp
     config.action_dispatch.cookies_same_site_protection = :none
 
     config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Session::CookieStore
+    config.middleware.use ActionDispatch::Session::CookieStore, key: '_rails-mysession', expire_after: 20.minutes
 
     # Configuration for the application, engines, and railties goes here.
     #
