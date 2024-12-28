@@ -1,11 +1,11 @@
-import { cookies } from "next/headers";
+// import { cookies } from "next/headers";
 import { LoginForm } from '@/components/LoginForm'
 
-const cookieOptions = {
-  path: "/",
-  httpOnly: true,
-  sameSite: "lax",
-};
+// const cookieOptions = {
+//   path: "/",
+//   httpOnly: true,
+//   sameSite: "lax",
+// };
 
 
 export default async function LoginPage() {

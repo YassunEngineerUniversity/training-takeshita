@@ -1,5 +1,5 @@
 'use client'
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Post from './Post'
 
 export type PostData = {
@@ -11,7 +11,7 @@ export type PostData = {
 }
 
 export default function PostList() {
-  let posts: PostData[] = []
+  const [posts, setPosts] = useState<PostData[]>([])
 
   useEffect(() => {
     (async () => {
@@ -24,10 +24,10 @@ export default function PostList() {
           }
         })
         const data = await response.json()
-        // APIレスポンスが配列であることを確認
-        posts = Array.isArray(data) ? data : []
+        setPosts(Array.isArray(data) ? data : [])
       } catch (error) {
         console.error('投稿の取得に失敗しました:', error)
+        setPosts([])
       }        
     })()
   }, [])
@@ -37,11 +37,13 @@ export default function PostList() {
       {posts.map((post) => (
         <Post
           key={post.id}
-          id={post.id}
-          content={post.content}
-          userId={post.user_id}
-          createdAt={post.created_at}
-          updatedAt={post.updated_at}
+          post={{
+            id: post.id,
+            content: post.content,
+            user_id: post.user_id,
+            created_at: post.created_at,
+            updated_at: post.updated_at
+          }}
         />
       ))}
     </div>

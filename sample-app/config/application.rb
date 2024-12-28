@@ -13,8 +13,6 @@ module SampleApp
     config.load_defaults 7.0
     config.active_storage.variant_processor = :mini_magick
 
-    config.action_dispatch.cookies_same_site_protection = :none
-
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore, key: '_rails-mysession', expire_after: 20.minutes
 
