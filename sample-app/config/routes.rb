@@ -13,6 +13,9 @@ Rails.application.routes.draw do
       end
     end
     resources :posts do
+      collection do
+        get :all, :mine
+      end
       member do
         post 'like', to: 'likes#create'
         delete 'like', to: 'likes#destroy'

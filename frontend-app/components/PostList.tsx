@@ -10,13 +10,17 @@ export type PostData = {
   updated_at: string
 }
 
-export default function PostList() {
+type PostListProps = {
+  apiUrl: string
+}
+
+export default function PostList({ apiUrl }: PostListProps) {
   const [posts, setPosts] = useState<PostData[]>([])
 
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetch(`/api/posts?&page=1`, {
+        const response = await fetch(apiUrl, {
           method: 'GET',
           credentials: 'include', 
           headers: {
@@ -30,7 +34,7 @@ export default function PostList() {
         setPosts([])
       }        
     })()
-  }, [])
+  }, [apiUrl])
 
   return (
     <div className="space-y-4">

@@ -1,13 +1,11 @@
 module Api
   class PostsController < ApplicationController
-    before_action :logged_in_user, only: %i[index show create destroy]
+    before_action :logged_in_user, only: %i[index show create destroy all mine]
     before_action :correct_user,   only: :destroy
 
     def index
-      # binding.pry
       # @feed_items = current_user.feed.paginate(page: params[:page]) # will_paginate
       @feed_items = current_user.feed.page(params[:page]) # kaminari
-      # binding.pry
       render json: @feed_items, status: :ok
     end
 
@@ -42,6 +40,16 @@ module Api
       else
         redirect_to request.referrer, status: :see_other
       end
+    end
+
+    def all
+      @all_posts = Post.all.page(params[:page]) # kaminari
+      render json: @all_posts, status: :ok
+    end
+
+    def mine
+      @my_posts = current_user.posts.page(params[:page]) # kaminari
+      render json: @my_posts, status: :ok
     end
 
     private

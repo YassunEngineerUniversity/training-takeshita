@@ -11,13 +11,13 @@ export default function PostTabs() {
                 <TabsTrigger value="mine">My Posts</TabsTrigger>
             </TabsList>
             <TabsContent value="all">
-                <PostList />
+                <PostList apiUrl="/api/posts/all?page=1" />
             </TabsContent>
             <TabsContent value="following">
-                <PostList />
+                <PostList apiUrl="/api/posts?page=1" />
             </TabsContent>
             <TabsContent value="mine">
-                <PostList />
+                <PostList apiUrl="/api/posts/mine?page=1" />
             </TabsContent>
         </Tabs>
     )
