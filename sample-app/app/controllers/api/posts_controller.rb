@@ -43,12 +43,16 @@ module Api
     end
 
     def all
-      @all_posts = Post.all.page(params[:page]) # kaminari
+      @all_posts = Post.all.page(params[:page])
+                       .joins(:user) # Add explicit join with users table
+                       .select('posts.*, users.name as user_name')
       render json: @all_posts, status: :ok
     end
 
     def mine
-      @my_posts = current_user.posts.page(params[:page]) # kaminari
+      @my_posts = current_user.posts.page(params[:page])
+                              .joins(:user) # Add explicit join with users table
+                              .select('posts.*, users.name as user_name')
       render json: @my_posts, status: :ok
     end
 

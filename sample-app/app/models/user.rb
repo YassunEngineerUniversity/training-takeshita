@@ -115,11 +115,13 @@ class User < ApplicationRecord
 
   # ユーザーのステータスフィードを返す
   def feed
-    followees_ids = "SELECT followee_id FROM follow_users
-                     WHERE  follower_id = :user_id"
-    Post.where("user_id IN (#{followees_ids})
-                     OR user_id = :user_id", user_id: id)
+    Post.joins('LEFT JOIN follow_users ON follow_users.followee_id = posts.user_id')
+        .joins(:user) # Add explicit join with users table
+        .select('posts.*, users.name as user_name') # Select posts fields and user name
+        .where('follow_users.follower_id = :user_id OR posts.user_id = :user_id',
+               user_id: id)
         .includes(:user, image_attachment: :blob)
+        .distinct
   end
 
   # ユーザーをフォローする
