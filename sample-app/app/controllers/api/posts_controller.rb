@@ -16,7 +16,10 @@ module Api
       # JSONレスポンスを返す
       render json: {
         content: @post.content,
-        created_at: @post.created_at
+        user_id: @post.user_id,
+        user_name: @post.user.name,
+        created_at: @post.created_at,
+        updated_at: @post.updated_at
       }, status: :ok
     rescue ActiveRecord::RecordNotFound
       # レコードが見つからない場合

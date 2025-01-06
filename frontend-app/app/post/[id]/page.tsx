@@ -3,22 +3,42 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Post from '@/components/Post'
+import type {PostData} from '@/components/PostList'
 import CommentForm from '@/components/CommentForm'
 import CommentList from '@/components/CommentList'
 
 export default function PostDetail() {
   const { id } = useParams()
-  const [post, setPost] = useState(null)
+  const [post, setPost] = useState<PostData | undefined>(undefined)
 
   useEffect(() => {
-    // Fetch post details
-    const fetchPost = async () => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/posts/${id}`)
-      const data = await response.json()
-      setPost(data)
-    }
-    fetchPost()
-  }, [id])
+    (async () => {
+      try {
+        const response = await fetch(`/api/posts/${id}`, {
+          method: 'GET',
+          credentials: 'include', 
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        const data = await response.json()
+        setPost(data)
+      } catch (error) {
+        console.error('投稿の取得に失敗しました:', error)
+        setPost(undefined)
+      }        
+    })()
+  }, [])
+
+  // useEffect(() => {
+  //   // Fetch post details
+  //   const fetchPost = async () => {
+  //     const response = await fetch(`/api/posts/${id}`)
+  //     const data = await response.json()
+  //     setPost(data)
+  //   }
+  //   fetchPost()
+  // }, [id])
 
   const handleLike = async () => {
     // Implement like logic here
@@ -28,7 +48,18 @@ export default function PostDetail() {
 
   return (
     <div>
-      <Post post={post} onLike={handleLike} />
+      {/* <Post post={post} onLike={handleLike} /> */}
+      <Post
+          key={post.id}
+          post={{
+            id: post.id,
+            content: post.content,
+            user_id: post.user_id,
+            user_name: post.user_name,
+            created_at: post.created_at,
+            updated_at: post.updated_at
+          }}
+        />
       <CommentForm postId={id as string} />
       <CommentList postId={id as string} />
     </div>
