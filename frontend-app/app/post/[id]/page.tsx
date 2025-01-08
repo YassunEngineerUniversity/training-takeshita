@@ -50,18 +50,19 @@ export default function PostDetail() {
     <div>
       {/* <Post post={post} onLike={handleLike} /> */}
       <Post
-          key={post.id}
-          post={{
-            id: post.id,
-            content: post.content,
-            user_id: post.user_id,
-            user_name: post.user_name,
-            created_at: post.created_at,
-            updated_at: post.updated_at
-          }}
-        />
-      <CommentForm postId={id as string} />
-      <CommentList postId={id as string} />
+        key={post.id}
+        post={{
+          id: post.id,
+          content: post.content,
+          user_id: post.user_id,
+          user_name: post.user_name,
+          created_at: post.created_at,
+          updated_at: post.updated_at,
+          liked: post.liked
+        }}
+      />
+      {/* <CommentForm postId={post.id} />
+      <CommentList postId={post.id} /> */}
     </div>
   )
 }

@@ -9,6 +9,7 @@ export type PostData = {
   user_name: string
   created_at: string
   updated_at: string
+  liked: boolean
 }
 
 type PostListProps = {
@@ -48,7 +49,8 @@ export default function PostList({ apiUrl }: PostListProps) {
             user_id: post.user_id,
             user_name: post.user_name,
             created_at: post.created_at,
-            updated_at: post.updated_at
+            updated_at: post.updated_at,
+            liked: post.liked
           }}
         />
       ))}

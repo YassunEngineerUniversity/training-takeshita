@@ -3,7 +3,7 @@ module Api
     before_action :logged_in_user, only: %i[create destroy]
 
     def create
-      if current_user.likes.find_by(id: params[:id]).nil?
+      if current_user.likes.find_by(post_id: params[:id]).nil?
         @post = Post.find(params[:id])
         @like = @post.likes.build(user: current_user)
         if @like.save
@@ -18,9 +18,9 @@ module Api
     end
 
     def destroy
-      @like = current_user.likes.find_by(id: params[:id])
+      @like = current_user.likes.find_by(post_id: params[:id])
       if @like && @like.destroy
-        head :see_other
+        head :no_content
       else
         render json: { error: '無効なリクエスト' }, status: :unprocessable_entity
       end
