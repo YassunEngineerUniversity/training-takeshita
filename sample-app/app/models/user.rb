@@ -113,17 +113,6 @@ class User < ApplicationRecord
     reset_sent_at < 2.hours.ago
   end
 
-  # ユーザーのステータスフィードを返す
-  def feed
-    Post.joins('LEFT JOIN follow_users ON follow_users.followee_id = posts.user_id')
-        .joins(:user) # Add explicit join with users table
-        .select('posts.*, users.name as user_name') # Select posts fields and user name
-        .where('follow_users.follower_id = :user_id OR posts.user_id = :user_id',
-               user_id: id)
-        .includes(:user, image_attachment: :blob)
-        .distinct
-  end
-
   # ユーザーをフォローする
   def follow(other_user)
     followees << other_user unless self == other_user

@@ -63,7 +63,6 @@ RSpec.describe 'Api::Posts', type: :request do
 
     it '全ての投稿を取得できること' do
       get '/api/posts'
-      binding.pry
 
       expect(response).to have_http_status(:ok)
       response_body = JSON.parse(response.body)

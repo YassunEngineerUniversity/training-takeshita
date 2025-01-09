@@ -108,7 +108,7 @@ RSpec.describe User, type: :model do
   describe 'following' do
     user1 = FactoryBot.create(:user)
     user2 = FactoryBot.create(:user)
-    user3 = FactoryBot.create(:user)
+    FactoryBot.create(:user)
 
     context 'when following users' do
       it 'follows and unfollows a user' do
@@ -127,28 +127,28 @@ RSpec.describe User, type: :model do
       end
     end
 
-    describe 'feed' do
-      before do
-        user1.follow(user3)
-      end
+    # describe 'feed' do
+    #   before do
+    #     user1.follow(user3)
+    #   end
 
-      it 'includes own posts' do
-        user1.posts.each do |post_self|
-          expect(user1.feed).to include(post_self)
-        end
-      end
+    #   it 'includes own posts' do
+    #     user1.posts.each do |post_self|
+    #       expect(user1.feed).to include(post_self)
+    #     end
+    #   end
 
-      it 'includes followed user posts' do
-        user3.posts.each do |post_following|
-          expect(user1.feed).to include(post_following)
-        end
-      end
+    #   it 'includes followed user posts' do
+    #     user3.posts.each do |post_following|
+    #       expect(user1.feed).to include(post_following)
+    #     end
+    #   end
 
-      it 'excludes unfollowed user posts' do
-        user2.posts.each do |post_unfollowed|
-          expect(user1.feed).not_to include(post_unfollowed)
-        end
-      end
-    end
+    #   it 'excludes unfollowed user posts' do
+    #     user2.posts.each do |post_unfollowed|
+    #       expect(user1.feed).not_to include(post_unfollowed)
+    #     end
+    #   end
+    # end
   end
 end

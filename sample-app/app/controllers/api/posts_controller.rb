@@ -4,8 +4,19 @@ module Api
     before_action :correct_user,   only: :destroy
 
     def index
-      # @feed_items = current_user.feed.paginate(page: params[:page]) # will_paginate
-      @feed_items = current_user.feed.page(params[:page]) # kaminari
+      @feed_items = Post.joins('LEFT JOIN follow_users ON follow_users.followee_id = posts.user_id')
+                        .joins(:user) # Add explicit join with users table
+                        .select('posts.*, users.name as user_name') # Select posts fields and user name
+                        .where('follow_users.follower_id = :user_id OR posts.user_id = :user_id', user_id: current_user.id)
+                        .includes(:user, image_attachment: :blob)
+                        .distinct
+                        .page(params[:page])
+
+      # 各ポストに対してcurrent_userがいいねをしているかを確認
+      @feed_items = @feed_items.map do |post|
+        liked = post.likes.exists?(user_id: current_user.id) # current_userがいいねをしているか確認
+        post.attributes.merge(liked: liked) # likedを追加
+      end
       render json: @feed_items, status: :ok
     end
 
@@ -50,10 +61,19 @@ module Api
       end
     end
 
+    # ユーザーのステータスフィードを返す
+    def feed; end
+
     def all
       @all_posts = Post.all.page(params[:page])
                        .joins(:user) # Add explicit join with users table
                        .select('posts.*, users.name as user_name')
+
+      # 各ポストに対してcurrent_userがいいねをしているかを確認
+      @all_posts = @all_posts.map do |post|
+        liked = current_user.likes.exists?(post_id: post.id)
+        post.attributes.merge(liked: liked) # likedを追加
+      end
       render json: @all_posts, status: :ok
     end
 
@@ -61,6 +81,11 @@ module Api
       @my_posts = current_user.posts.page(params[:page])
                               .joins(:user) # Add explicit join with users table
                               .select('posts.*, users.name as user_name')
+      # 各ポストに対してcurrent_userがいいねをしているかを確認
+      @my_posts = @my_posts.map do |post|
+        liked = current_user.likes.exists?(post_id: post.id)
+        post.attributes.merge(liked: liked) # likedを追加
+      end
       render json: @my_posts, status: :ok
     end
 
