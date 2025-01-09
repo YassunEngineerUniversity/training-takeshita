@@ -62,7 +62,7 @@ RSpec.describe 'Api::Posts', type: :request do
         delete "/api/posts/#{existing_post.id}/like"
       end.to change(Like, :count).by(-1)
 
-      expect(response).to have_http_status(:see_other)
+      expect(response).to have_http_status(:no_content)
     end
 
     it 'いいねをしていない投稿への「いいね解除」はできないこと' do
