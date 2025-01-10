@@ -13,7 +13,14 @@ module Api
       @user = User.find(params[:id])
       # @posts = @user.posts.paginate(page: params[:page]) # will_paginate
       @posts = @user.posts.page(params[:page]) # kaminari
-      render json: { user_info: { name: @user.name, registration_date: @user.created_at }, posts_info: @posts },
+
+      # 各ポストに対してcurrent_userがいいねをしているかを確認
+      @posts = @posts.map do |post|
+        liked = post.likes.exists?(user_id: current_user.id) # current_userがいいねをしているか確認
+        post.attributes.merge(liked: liked) # likedを追加
+      end
+
+      render json: { user_info: { user_id: @user.id, name: @user.name, registration_date: @user.created_at }, posts_info: @posts },
              status: :ok
     end
 

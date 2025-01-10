@@ -28,17 +28,8 @@ export default function PostDetail() {
         setPost(undefined)
       }        
     })()
-  }, [])
+  }, [id])
 
-  // useEffect(() => {
-  //   // Fetch post details
-  //   const fetchPost = async () => {
-  //     const response = await fetch(`/api/posts/${id}`)
-  //     const data = await response.json()
-  //     setPost(data)
-  //   }
-  //   fetchPost()
-  // }, [id])
 
   const handleLike = async () => {
     // Implement like logic here
@@ -48,7 +39,6 @@ export default function PostDetail() {
 
   return (
     <div>
-      {/* <Post post={post} onLike={handleLike} /> */}
       <Post
         key={post.id}
         post={{
