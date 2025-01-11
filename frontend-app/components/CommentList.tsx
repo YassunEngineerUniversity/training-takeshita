@@ -1,40 +1,50 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import Link from 'next/link'
 
-type CommentType = {
-  id: string
-  content: string
-  author: {
-    id: string
-    name: string
+interface CommentProps {
+  comment: {
+    id: number
+    content: string
+    user_id: number
+    user_name: string
+    created_at: string
+    updated_at: string
   }
 }
 
-type CommentListProps = {
-  postId: string
+export interface CommentListProps {
+  comments: {
+    id: number
+    content: string
+    user_id: number
+    user_name: string
+    created_at: string
+    updated_at: string
+  }[]
 }
 
-export default function CommentList({ postId }: CommentListProps) {
-  const [comments, setComments] = useState<CommentType[]>([])
+function Comment({ comment }: CommentProps) {
+  return (
+      <div className="border p-4 rounded-md">
+        <div className="flex flex-col gap-2">
+          <p><strong>User ID:</strong> {comment.user_id}</p>
+          <Link href={`/user/${comment.user_id}`} className="font-bold hover:underline">
+            <p><strong>User Name:</strong> {comment.user_name}</p>
+          </Link>
+            <p><strong>Content:</strong> {comment.content}</p>
+            <p><strong>Updated at:</strong> {new Date(comment.created_at).toLocaleString()}</p>
+            <p><strong>Updated at:</strong> {new Date(comment.updated_at).toLocaleString()}</p>
+        </div>       
+      </div>
+  )
+}
 
-  useEffect(() => {
-    // Fetch comments
-    const fetchComments = async () => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/posts/${postId}/comments`)
-      const data = await response.json()
-      setComments(data)
-    }
-    fetchComments()
-  }, [postId])
-
+export default function CommentList({ comments }: CommentListProps) {
   return (
     <div className="mt-4 space-y-2">
-      {comments.map(comment => (
-        <div key={comment.id} className="border p-2 rounded-md">
-          <p className="font-bold">{comment.author.name}</p>
-          <p>{comment.content}</p>
-        </div>
+      {comments.map((comment) => (
+        <Comment comment={comment} key={comment.id} />
       ))}
     </div>
   )

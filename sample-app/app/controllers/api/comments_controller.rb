@@ -4,7 +4,7 @@ module Api
 
     def create
       @post = Post.find(params[:id])
-      @comment = @post.comments.build(user: current_user, content: comment_params)
+      @comment = @post.comments.build(user: current_user, content: comment_params[:content])
       if @comment.save
         head :created
       else

@@ -17,7 +17,7 @@ module Api
       # 各ポストに対してcurrent_userがいいねをしているかを確認
       @posts = @posts.map do |post|
         liked = post.likes.exists?(user_id: current_user.id) # current_userがいいねをしているか確認
-        post.attributes.merge(liked: liked) # likedを追加
+        post.attributes.merge(user_name: post.user.name, liked: liked) # likedを追加
       end
 
       render json: { user_info: { user_id: @user.id, name: @user.name, registration_date: @user.created_at }, posts_info: @posts },

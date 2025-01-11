@@ -25,17 +25,25 @@ module Api
       @post = Post.find(params[:id])
 
       # current_userが@postにいいねをしているか確認
-      liked = current_user.likes.exists?(post_id: @post.id)
+      @liked = current_user.likes.exists?(post_id: @post.id)
+
+      @comments = @post.comments
+      @comments = @comments.map do |comment|
+        comment.attributes.merge(user_name: comment.user.name)
+      end
 
       # JSONレスポンスを返す
       render json: {
-        id: @post.id,
-        content: @post.content,
-        user_id: @post.user_id,
-        user_name: @post.user.name,
-        created_at: @post.created_at,
-        updated_at: @post.updated_at,
-        liked: liked # いいねの状態を追加
+        post: {
+          id: @post.id,
+          content: @post.content,
+          user_id: @post.user_id,
+          user_name: @post.user.name,
+          created_at: @post.created_at,
+          updated_at: @post.updated_at,
+          liked: @liked # いいねの状態を追加
+        },
+        comments: @comments
       }, status: :ok
     rescue ActiveRecord::RecordNotFound
       # レコードが見つからない場合

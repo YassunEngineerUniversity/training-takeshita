@@ -5,10 +5,12 @@ import { useParams } from 'next/navigation'
 import Post from '@/components/Post'
 import type {PostData} from '@/components/PostList'
 import CommentList from '@/components/CommentList'
+import type {CommentListProps} from '@/components/CommentList'
 
 export default function PostDetail() {
   const { id } = useParams()
   const [post, setPost] = useState<PostData | undefined>(undefined)
+  const [commentList, setCommentList] = useState<CommentListProps['comments']>([])
 
   useEffect(() => {
     (async () => {
@@ -21,18 +23,14 @@ export default function PostDetail() {
           }
         })
         const data = await response.json()
-        setPost(data)
+        setPost(data.post)
+        setCommentList(data.comments || [])
       } catch (error) {
         console.error('投稿の取得に失敗しました:', error)
         setPost(undefined)
       }        
     })()
   }, [id])
-
-
-  const handleLike = async () => {
-    // Implement like logic here
-  }
 
   if (!post) return <div>Loading...</div>
 
@@ -50,8 +48,7 @@ export default function PostDetail() {
           liked: post.liked
         }}
       />
-      {/*
-      <CommentList postId={post.id} /> */}
+      <CommentList comments={commentList} />
     </div>
   )
 }
