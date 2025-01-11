@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Api::Posts', type: :request do
   let(:user) { FactoryBot.create(:user) }
-  let(:content_params) { { post: { content: 'test' } } }
+  let(:content_params) { { comment: { content: 'test' } } }
 
   describe '認証のないリクエスト' do
     context 'ログインしていない状態' do

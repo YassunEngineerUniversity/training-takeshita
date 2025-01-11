@@ -39,15 +39,11 @@ export function HeartButton({ postId, initialLiked }: HeartButtonProps) {
   return (
     <Button
       variant="ghost"
-      size="sm"
       onClick={handleLikeClick}
       disabled={isLoading}
+      className="h-8 w-8"
     >
-      {isLiked ? (
-        <Heart className="h-5 w-5 fill-red-500 text-red-500" />
-      ) : (
-        <Heart className="h-5 w-5" />
-      )}
+      <Heart className= {isLiked ? "color = text-red-600 fill-red-600 transition w-6 h-6" : "w-6 h-6" }/>
     </Button>
   )
 }

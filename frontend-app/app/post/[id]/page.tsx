@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Post from '@/components/Post'
 import type {PostData} from '@/components/PostList'
-import CommentForm from '@/components/CommentForm'
 import CommentList from '@/components/CommentList'
 
 export default function PostDetail() {
@@ -51,7 +50,7 @@ export default function PostDetail() {
           liked: post.liked
         }}
       />
-      {/* <CommentForm postId={post.id} />
+      {/*
       <CommentList postId={post.id} /> */}
     </div>
   )

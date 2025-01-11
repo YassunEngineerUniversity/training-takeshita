@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { HeartButton } from './HeartButton'
+import { CommentDialog } from './CommentDialog'
 
 export interface PostProps {
   post: {
@@ -26,7 +27,10 @@ export default function Post({ post }: PostProps) {
             <p><strong>Updated at:</strong> {new Date(post.created_at).toLocaleString()}</p>
             <p><strong>Updated at:</strong> {new Date(post.updated_at).toLocaleString()}</p>
           </Link>
-          <HeartButton postId={post.id} initialLiked={post.liked}/>
+          <div className='flex gap-2'>
+            <HeartButton postId={post.id} initialLiked={post.liked}/>
+            <CommentDialog postId={post.id} />
+          </div>
         </div>       
       </div>
   )

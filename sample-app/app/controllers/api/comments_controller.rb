@@ -25,7 +25,7 @@ module Api
     private
 
     def comment_params
-      params.require(:post).permit(:content)
+      params.require(:comment).permit(:content)
     end
   end
 end
