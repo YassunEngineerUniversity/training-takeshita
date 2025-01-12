@@ -23,7 +23,6 @@ module Api
         render json: {
           error: 'メールアドレスまたはパスワードが間違っています'
         }, status: :unauthorized
-        # render 'new', status: :unprocessable_entity
       end
     end
 

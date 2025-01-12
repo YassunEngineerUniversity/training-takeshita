@@ -10,6 +10,7 @@ module Api
 
     def destroy
       @user = User.find(params[:id])
+      # @user = FollowUser.find(params[:id]).followee
       current_user.unfollow(@user)
       render json: @user.followees, status: :see_other
     end

@@ -69,9 +69,6 @@ module Api
       end
     end
 
-    # ユーザーのステータスフィードを返す
-    def feed; end
-
     def all
       @all_posts = Post.all.page(params[:page])
                        .joins(:user) # Add explicit join with users table
