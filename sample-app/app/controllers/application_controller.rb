@@ -9,6 +9,5 @@ class ApplicationController < ActionController::API
     return if logged_in?
 
     render json: { error: 'Unauthorized' }, status: :unauthorized
-    # render json: { error: 'Unauthorized' }, status: :unprocessable_entity
   end
 end

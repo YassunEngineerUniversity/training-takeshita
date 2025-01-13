@@ -14,7 +14,7 @@ module SampleApp
     config.active_storage.variant_processor = :mini_magick
 
     config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Session::CookieStore, key: '_rails-mysession', expire_after: 20.minutes
+    config.middleware.use ActionDispatch::Session::CookieStore, key: '_rails-mysession', expire_after: 30.days
 
     # Configuration for the application, engines, and railties goes here.
     #

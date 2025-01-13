@@ -1,5 +1,16 @@
 module Api
   class SessionsController < ApplicationController
+    def index
+      if current_user
+        render json: {
+          id: current_user.id,
+          name: current_user.name
+        }, status: :ok
+      else
+        render json: { error: 'Not logged in' }, status: :unauthorized
+      end
+    end
+
     def create
       user = User.find_by(email: params[:session][:email].downcase)
       if user && user.authenticate(params[:session][:password])
