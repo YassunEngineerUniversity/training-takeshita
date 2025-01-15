@@ -39,7 +39,7 @@ module Api
 
     def destroy
       log_out if logged_in?
-      # redirect_to root_url, status: :see_other
+      head :no_content
     end
   end
 end

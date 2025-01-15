@@ -9,15 +9,24 @@ export default function Header() {
   const router = useRouter()
   const { user } = useAuth();
 
-  const handleLogin = () => {
-    // Implement logout logic here
-    router.push('/login')
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/login', {
+        method: 'DELETE',
+      })
+      
+      if (!response.ok) {
+        throw new Error('Logout failed')
+      }
+      
+      // Redirect to login page
+      router.push('/login')
+    } catch (error) {
+      console.error('Logout error:', error)
+      // Here you might want to show an error message to the user
+    } finally {
+    }
   }
-
-  // const handleLogout = () => {
-  //   // Implement logout logic here
-  //   router.push('/login')
-  // }
 
   return (
     <header className="bg-white shadow-md">
@@ -28,11 +37,9 @@ export default function Header() {
             <Link href={`/user/${user.id}`} className="font-bold hover:underline">
               <span>{user.name}</span>
             </Link>
-            <Button onClick={handleLogin}>Logout</Button>
+            <Button onClick={handleLogout}>Logout</Button>
           </div>
-        ) : (
-          <Button onClick={handleLogin}>Login</Button>
-        )}
+        ) : (<></>)}
       </div>
     </header>
   )
