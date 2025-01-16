@@ -20,7 +20,7 @@ module Api
         post.attributes.merge(user_name: post.user.name, liked: liked) # likedを追加
       end
 
-      render json: { user_info: { user_id: @user.id, name: @user.name, registration_date: @user.created_at }, posts_info: @posts },
+      render json: { user_info: { user_id: @user.id, name: @user.name, registration_date: @user.created_at, followed: current_user.following?(@user) }, posts_info: @posts },
              status: :ok
     end
 

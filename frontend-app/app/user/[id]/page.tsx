@@ -6,12 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
 import Post from "@/components/Post"
+import FollowButton from '@/components/FollowButton'
 
 
 interface UserInfo {
   user_id: number
   name: string
   registration_date: string
+  followed: boolean
 }
 
 interface UserData {
@@ -91,6 +93,12 @@ function UserInfoCard({ userInfo }: { userInfo: UserInfo }) {
           <p className="text-sm text-muted-foreground">
             Joined {new Date(userInfo.registration_date).toLocaleDateString()}
           </p>
+        </div>
+        <div>
+          <FollowButton 
+            userId={userInfo.user_id} 
+            initialFollowed={userInfo.followed}
+          />
         </div>
       </CardHeader>
     </Card>
