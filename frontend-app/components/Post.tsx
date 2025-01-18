@@ -3,7 +3,6 @@ import { HeartButton } from './HeartButton'
 import { CommentDialog } from './CommentDialog'
 
 export interface PostProps {
-  post: {
     id: number
     content: string
     user_id: number
@@ -11,10 +10,9 @@ export interface PostProps {
     created_at: string
     updated_at: string
     liked: boolean
-  }
 }
 
-export default function Post({ post }: PostProps) {
+export default function Post(post: PostProps) {
   return (
       <div className="border p-4 rounded-md">
         <div className="flex flex-col gap-2">

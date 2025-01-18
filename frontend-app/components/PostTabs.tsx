@@ -6,18 +6,18 @@ export default function PostTabs() {
     return (
         <Tabs defaultValue="all" className="w-full mt-8">
             <TabsList>
-                <TabsTrigger value="all">All Posts</TabsTrigger>
-                <TabsTrigger value="following">Following</TabsTrigger>
-                <TabsTrigger value="mine">My Posts</TabsTrigger>
+                <TabsTrigger value="all">すべての投稿</TabsTrigger>
+                <TabsTrigger value="feed">フィード</TabsTrigger>
+                <TabsTrigger value="mine">自分の投稿</TabsTrigger>
             </TabsList>
             <TabsContent value="all">
-                <PostList apiUrl="/api/posts/all?page=1" />
+                <PostList apiUrl="/api/posts/all" />
             </TabsContent>
-            <TabsContent value="following">
-                <PostList apiUrl="/api/posts?page=1" />
+            <TabsContent value="feed">
+                <PostList apiUrl="/api/posts" />
             </TabsContent>
             <TabsContent value="mine">
-                <PostList apiUrl="/api/posts/mine?page=1" />
+                <PostList apiUrl="/api/posts/mine" />
             </TabsContent>
         </Tabs>
     )

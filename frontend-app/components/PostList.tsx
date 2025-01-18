@@ -1,23 +1,16 @@
 'use client'
+
 import { useState, useEffect } from 'react'
-import Post from './Post'
+import Post, {type PostProps} from './Post'
 
-export type PostData = {
-  id: number
-  content: string
-  user_id: number
-  user_name: string
-  created_at: string
-  updated_at: string
-  liked: boolean
-}
-
-type PostListProps = {
+interface PostListProps {
   apiUrl: string
 }
 
+
 export default function PostList({ apiUrl }: PostListProps) {
-  const [posts, setPosts] = useState<PostData[]>([])
+  
+  const [posts, setPosts] = useState<PostProps[]>([])
 
   useEffect(() => {
     (async () => {
@@ -43,15 +36,13 @@ export default function PostList({ apiUrl }: PostListProps) {
       {posts.map((post) => (
         <Post
           key={post.id}
-          post={{
-            id: post.id,
-            content: post.content,
-            user_id: post.user_id,
-            user_name: post.user_name,
-            created_at: post.created_at,
-            updated_at: post.updated_at,
-            liked: post.liked
-          }}
+          id ={post.id}
+          content={post.content}
+          user_id={post.user_id}
+          user_name={post.user_name}
+          created_at={post.created_at}
+          updated_at={post.updated_at}
+          liked={post.liked}
         />
       ))}
     </div>

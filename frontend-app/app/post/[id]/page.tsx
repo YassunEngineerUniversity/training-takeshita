@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Post from '@/components/Post'
-import type {PostData} from '@/components/PostList'
+import { type PostProps } from '@/components/Post'
 import CommentList from '@/components/CommentList'
 import type {CommentListProps} from '@/components/CommentList'
 
 export default function PostDetail() {
   const { id } = useParams()
-  const [post, setPost] = useState<PostData | undefined>(undefined)
+  const [post, setPost] = useState<PostProps | undefined>(undefined)
   const [commentList, setCommentList] = useState<CommentListProps['comments']>([])
 
   useEffect(() => {
@@ -38,15 +38,13 @@ export default function PostDetail() {
     <div>
       <Post
         key={post.id}
-        post={{
-          id: post.id,
-          content: post.content,
-          user_id: post.user_id,
-          user_name: post.user_name,
-          created_at: post.created_at,
-          updated_at: post.updated_at,
-          liked: post.liked
-        }}
+        id ={post.id}
+        content={post.content}
+        user_id={post.user_id}
+        user_name={post.user_name}
+        created_at={post.created_at}
+        updated_at={post.updated_at}
+        liked={post.liked}
       />
       <CommentList comments={commentList} />
     </div>
