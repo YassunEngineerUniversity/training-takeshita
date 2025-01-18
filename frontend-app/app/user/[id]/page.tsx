@@ -2,12 +2,12 @@
 
 import { useParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Skeleton } from "@/components/ui/skeleton"
 import Post, {type PostProps} from '@/components/Post'
 import FollowButton from '@/components/FollowButton'
-
+import ErrorDisplay from '@/components/ErrorDisplay'
+import LoadingSkeleton from '@/components/LoadingSkeleton'
 
 interface UserProps {
   user_id: number
@@ -115,47 +115,3 @@ function UserInfoCard({
     </Card>
   )
 }
-
-function LoadingSkeleton() {
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <Card className="mb-8">
-        <CardHeader className="flex flex-row items-center gap-4">
-          <Skeleton className="h-16 w-16 rounded-full" />
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-[200px]" />
-            <Skeleton className="h-4 w-[150px]" />
-          </div>
-        </CardHeader>
-      </Card>
-      <div className="space-y-4">
-        <Skeleton className="h-8 w-[150px]" />
-        {[1, 2, 3].map((i) => (
-          <Card key={i}>
-            <CardContent className="pt-6">
-              <Skeleton className="h-4 w-full mb-2" />
-              <Skeleton className="h-4 w-full mb-2" />
-              <Skeleton className="h-4 w-2/3" />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function ErrorDisplay({ message }: { message: string }) {
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <Card className="bg-red-50 border-red-200">
-        <CardHeader>
-          <CardTitle className="text-red-800">Error</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-red-600">{message}</p>
-        </CardContent>
-      </Card>
-    </div>
-  )
-}
-
