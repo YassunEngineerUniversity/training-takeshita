@@ -1,0 +1,28 @@
+# == Schema Information
+#
+# Table name: reservations
+#
+#  id               :integer          not null, primary key
+#  name             :string
+#  user_id          :integer          not null
+#  ticket_agency_id :integer          not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#
+# Indexes
+#
+#  index_reservations_on_ticket_agency_id  (ticket_agency_id)
+#  index_reservations_on_user_id           (user_id)
+#
+
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  user: one
+  ticket_agency: one
+
+two:
+  name: MyString
+  user: two
+  ticket_agency: two
