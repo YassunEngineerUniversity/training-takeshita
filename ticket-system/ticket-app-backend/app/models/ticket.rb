@@ -20,4 +20,7 @@ class Ticket < ApplicationRecord
   belongs_to :reservation
   belongs_to :user
   belongs_to :ticket_type
+  validates :user_id, presence: true
+  validates :ticket_type_id, presence: true
+  validates :reservation_id, presence: true
 end
