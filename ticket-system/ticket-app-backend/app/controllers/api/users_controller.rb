@@ -50,16 +50,5 @@ module Api
       params.require(:user).permit(:name, :email, :password,
                                    :password_confirmation)
     end
-
-    # beforeフィルタ
-
-    # 正しいユーザーかどうか確認
-    def correct_user
-      @user = User.find(params[:id])
-      unless current_user?(@user)
-        render json: { error: 'Unauthorized' }, status: :unauthorized
-      end
-    end
-
   end
 end

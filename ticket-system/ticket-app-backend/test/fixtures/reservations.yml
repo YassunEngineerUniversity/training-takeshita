@@ -3,7 +3,6 @@
 # Table name: reservations
 #
 #  id               :integer          not null, primary key
-#  name             :string
 #  user_id          :integer          not null
 #  ticket_agency_id :integer          not null
 #  created_at       :datetime         not null

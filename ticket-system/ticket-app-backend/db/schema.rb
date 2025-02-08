@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_23_114649) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_20_140645) do
   create_table "entrances", force: :cascade do |t|
     t.string "name"
     t.integer "venue_id", null: false
@@ -24,9 +24,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_23_114649) do
     t.integer "performance_id", null: false
     t.integer "venue_id", null: false
     t.datetime "start_time"
+    t.datetime "end_time"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "end_time"
     t.index ["performance_id"], name: "index_events_on_performance_id"
     t.index ["venue_id"], name: "index_events_on_venue_id"
   end
@@ -46,7 +46,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_23_114649) do
   end
 
   create_table "reservations", force: :cascade do |t|
-    t.string "name"
     t.integer "user_id", null: false
     t.integer "ticket_agency_id", null: false
     t.datetime "created_at", null: false
@@ -57,9 +56,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_23_114649) do
 
   create_table "ticket_agencies", force: :cascade do |t|
     t.string "name"
+    t.string "api_key"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "api_key"
   end
 
   create_table "ticket_types", force: :cascade do |t|
@@ -76,6 +75,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_23_114649) do
     t.integer "reservation_id", null: false
     t.integer "user_id", null: false
     t.integer "ticket_type_id", null: false
+    t.boolean "used", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["reservation_id"], name: "index_tickets_on_reservation_id"
@@ -86,14 +86,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_23_114649) do
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "email"
+    t.string "password_digest"
+    t.boolean "admin", default: false
+    t.string "remember_digest"
+    t.string "activation_digest"
+    t.boolean "activated", default: false
+    t.datetime "activated_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "password_digest"
-    t.boolean "admin"
-    t.string "activation_digest"
-    t.boolean "activated"
-    t.datetime "activated_at"
-    t.string "remember_digest"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 

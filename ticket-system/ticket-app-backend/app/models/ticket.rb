@@ -16,6 +16,14 @@
 #  index_tickets_on_user_id         (user_id)
 #
 
+#
+# Indexes
+#
+#  index_tickets_on_reservation_id  (reservation_id)
+#  index_tickets_on_ticket_type_id  (ticket_type_id)
+#  index_tickets_on_user_id         (user_id)
+#
+
 class Ticket < ApplicationRecord
   belongs_to :reservation
   belongs_to :user

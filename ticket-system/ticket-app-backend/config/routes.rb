@@ -19,6 +19,11 @@ Rails.application.routes.draw do
       get    '/login',   to: 'sessions#index'
       post   '/login',   to: 'sessions#create'
       delete '/login', to: 'sessions#destroy'
+      resources :tickets do
+        member do
+          post :use
+        end
+      end
       resources :users, only: %i[index show update destroy]
       resources :reservations, only: %i[index show update destroy]
       resources :tickets, only: %i[index show update destroy]

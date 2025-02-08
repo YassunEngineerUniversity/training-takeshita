@@ -1,8 +1,7 @@
 module Api
+  module Admin
   class UsersController < ApplicationController
     before_action :admin_user
-    before_action :logged_in_user, only: %i[index show edit update destroy]
-    before_action :correct_user,   only: %i[edit update]
 
     def show
       @user = User.find(params[:id])
@@ -52,21 +51,6 @@ module Api
     #                                :password_confirmation)
     # end
 
-    # beforeフィルタ
-
-    # 正しいユーザーかどうか確認
-    def correct_user
-      @user = User.find(params[:id])
-      unless current_user?(@user)
-        render json: { error: 'Unauthorized' }, status: :unauthorized
-      end
-    end
-
-    # 管理者かどうか確認
-    def admin_user
-      unless current_user.admin?
-        render json: { error: 'Unauthorized' }, status: :unauthorized
-      end
     end
   end
 end

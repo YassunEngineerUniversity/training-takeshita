@@ -4,6 +4,7 @@ class CreateTickets < ActiveRecord::Migration[8.0]
       t.references :reservation, null: false, foreign_key: true
       t.references :user, null: false, foreign_key: true
       t.references :ticket_type, null: false, foreign_key: true
+      t.boolean :used, default: false
 
       t.timestamps
     end
