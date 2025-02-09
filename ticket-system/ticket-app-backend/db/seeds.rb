@@ -79,6 +79,14 @@ TicketType.create!(name: 'メインS', event_id: 3, entrance_id: 5) #ticket_type
 
 TicketType.create!(name: 'バックS', event_id: 4, entrance_id: 6) #ticket_type_id: 4
 
+Perk.create!(name: 'ヴェルディスペシャルユニフォーム', active: true, valid_from: '2025-02-01 00:00:00', valid_until: '2025-02-28 23:59:59') #perk_id: 1
+TicketTypePerk.create!(ticket_type_id: 1, perk_id: 1) #ticket_type_perk_id: 1
+
+Perk.create!(name: 'マリノススペシャルユニフォーム', active: true, valid_from: '2025-02-01 00:00:00', valid_until: '2025-02-28 23:59:59') #perk_id: 1
+TicketTypePerk.create!(ticket_type_id: 2, perk_id: 2) #ticket_type_perk_id: 2
+TicketTypePerk.create!(ticket_type_id: 3, perk_id: 2) #ticket_type_perk_id: 3
+TicketTypePerk.create!(ticket_type_id: 4, perk_id: 2) #ticket_type_perk_id: 4
+
 #B League
 TicketType.create!(name: '2階自由', event_id: 5, entrance_id: 7) #ticket_type_id: 5
 
