@@ -28,7 +28,19 @@ class Ticket < ApplicationRecord
   belongs_to :reservation
   belongs_to :user
   belongs_to :ticket_type
+  has_many :perk_usages
+  has_many :perks, through: :perk_usages
   validates :user_id, presence: true
   validates :ticket_type_id, presence: true
   validates :reservation_id, presence: true
+
+  def used?
+    perk_usages.any?
+  end
+
+  def used_perks
+    perk_usages.map do |perk_usage|
+      perk_usage.perk
+    end
+  end
 end

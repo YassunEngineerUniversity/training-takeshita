@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_20_140645) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_09_051258) do
   create_table "entrances", force: :cascade do |t|
     t.string "name"
     t.integer "venue_id", null: false
@@ -39,6 +39,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_20_140645) do
     t.index ["promoter_id"], name: "index_performances_on_promoter_id"
   end
 
+  create_table "perk_usages", force: :cascade do |t|
+    t.integer "ticket_id", null: false
+    t.integer "perk_id", null: false
+    t.datetime "used_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["perk_id"], name: "index_perk_usages_on_perk_id"
+    t.index ["ticket_id"], name: "index_perk_usages_on_ticket_id"
+  end
+
+  create_table "perks", force: :cascade do |t|
+    t.string "name"
+    t.boolean "active"
+    t.datetime "valid_from"
+    t.datetime "valid_until"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "promoters", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -59,6 +78,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_20_140645) do
     t.string "api_key"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "ticket_type_perks", force: :cascade do |t|
+    t.integer "ticket_type_id", null: false
+    t.integer "perk_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["perk_id"], name: "index_ticket_type_perks_on_perk_id"
+    t.index ["ticket_type_id"], name: "index_ticket_type_perks_on_ticket_type_id"
   end
 
   create_table "ticket_types", force: :cascade do |t|
@@ -107,8 +135,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_20_140645) do
   add_foreign_key "events", "performances"
   add_foreign_key "events", "venues"
   add_foreign_key "performances", "promoters"
+  add_foreign_key "perk_usages", "perks"
+  add_foreign_key "perk_usages", "tickets"
   add_foreign_key "reservations", "ticket_agencies"
   add_foreign_key "reservations", "users"
+  add_foreign_key "ticket_type_perks", "perks"
+  add_foreign_key "ticket_type_perks", "ticket_types"
   add_foreign_key "ticket_types", "entrances"
   add_foreign_key "ticket_types", "events"
   add_foreign_key "tickets", "reservations"
