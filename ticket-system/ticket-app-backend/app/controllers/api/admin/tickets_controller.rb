@@ -24,9 +24,6 @@ module Api
             }
           end
 
-
-
-
           ticket.as_json.merge(
             user_name: user_name,
             event_name: event&.name,
@@ -36,12 +33,8 @@ module Api
             event_start_time: event&.start_time,
             event_end_time: event&.end_time,
             perks_data: perks_data,
-            ticket_used: ticket&.used?,
           )
         end
-
-
-
 
         render json: tickets_data, status: :ok
       end
@@ -55,10 +48,15 @@ module Api
       end
 
       def use
-        if params[:id].present?
+        if Ticket.find_by(id: params[:id]).present?
           ticket = Ticket.find(params[:id])
-          ticket.update(used: true)
-          render json: { message: 'Ticket used' }, status: :ok
+          unless ticket.used
+            ticket.update(used: true)
+
+            render json: { message: 'Ticket used' }, status: :ok
+          else
+            render json: { message: 'Ticket already used' }, status: :unprocessable_entity
+          end
         else
           render json: { message: 'Ticket not found' }, status: :not_found
         end

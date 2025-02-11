@@ -23,10 +23,16 @@ Rails.application.routes.draw do
         member do
           post :use
         end
+        resources :perks do
+          member do
+            post :use
+          end 
+        end
       end
       resources :users, only: %i[index show update destroy]
       resources :reservations, only: %i[index show update destroy]
       resources :tickets, only: %i[index show update destroy]
+      resources :perks, only: %i[index show update destroy]
       resources :events, only: %i[index show update destroy]
     end
   end

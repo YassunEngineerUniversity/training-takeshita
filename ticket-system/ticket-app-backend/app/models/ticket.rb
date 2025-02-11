@@ -6,6 +6,7 @@
 #  reservation_id :integer          not null
 #  user_id        :integer          not null
 #  ticket_type_id :integer          not null
+#  used           :boolean          default(FALSE)
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #
@@ -33,14 +34,4 @@ class Ticket < ApplicationRecord
   validates :user_id, presence: true
   validates :ticket_type_id, presence: true
   validates :reservation_id, presence: true
-
-  def used?
-    perk_usages.any?
-  end
-
-  def used_perks
-    perk_usages.map do |perk_usage|
-      perk_usage.perk
-    end
-  end
 end

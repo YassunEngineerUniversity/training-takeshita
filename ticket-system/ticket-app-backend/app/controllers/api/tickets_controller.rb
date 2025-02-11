@@ -35,7 +35,6 @@ module Api
           event_start_time: event&.start_time,
           event_end_time: event&.end_time,
           perks_data: perks_data,
-          ticket_used: ticket&.used?
         )
       end
 
