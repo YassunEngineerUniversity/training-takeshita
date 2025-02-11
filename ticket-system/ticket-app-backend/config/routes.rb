@@ -22,6 +22,7 @@ Rails.application.routes.draw do
       resources :tickets do
         member do
           post :use
+          post :transfer
         end
         resources :perks do
           member do

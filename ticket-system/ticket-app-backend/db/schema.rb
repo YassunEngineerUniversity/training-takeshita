@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_09_051258) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_11_072402) do
   create_table "entrances", force: :cascade do |t|
     t.string "name"
     t.integer "venue_id", null: false
@@ -80,6 +80,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_09_051258) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "ticket_transfer_histories", force: :cascade do |t|
+    t.integer "ticket_id", null: false
+    t.integer "from_reservation_id"
+    t.integer "to_reservation_id"
+    t.datetime "transferred_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ticket_id"], name: "index_ticket_transfer_histories_on_ticket_id"
+  end
+
   create_table "ticket_type_perks", force: :cascade do |t|
     t.integer "ticket_type_id", null: false
     t.integer "perk_id", null: false
@@ -139,6 +149,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_09_051258) do
   add_foreign_key "perk_usages", "tickets"
   add_foreign_key "reservations", "ticket_agencies"
   add_foreign_key "reservations", "users"
+  add_foreign_key "ticket_transfer_histories", "tickets"
   add_foreign_key "ticket_type_perks", "perks"
   add_foreign_key "ticket_type_perks", "ticket_types"
   add_foreign_key "ticket_types", "entrances"

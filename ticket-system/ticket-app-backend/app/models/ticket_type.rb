@@ -20,4 +20,6 @@ class TicketType < ApplicationRecord
   belongs_to :entrance
   has_many :ticket_type_perks
   has_many :perks, through: :ticket_type_perks
+  has_many :tickets
+  has_many :reservations, through: :tickets
 end

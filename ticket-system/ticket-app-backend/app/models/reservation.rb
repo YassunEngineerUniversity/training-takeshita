@@ -17,4 +17,6 @@
 class Reservation < ApplicationRecord
   belongs_to :user
   belongs_to :ticket_agency
+  has_many :tickets
+  has_many :ticket_transfer_histories, through: :tickets
 end

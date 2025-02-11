@@ -62,6 +62,21 @@ module Api
         end
 
       end
+
+      def transfer
+        if Ticket.find_by(id: params[:id]).present? && Reservation.find_by(id: params[:new_reservation_id]).present?
+          ticket = Ticket.find(params[:id])
+          unless ticket.used
+            TicketTransferHistory.create!(ticket_id: ticket.id, from_reservation_id: ticket.reservation_id, to_reservation_id: params[:new_reservation_id], transferred_at: Time.current)
+            ticket.update(reservation_id: params[:new_reservation_id])
+            render json: { message: 'Ticket transferred' }, status: :ok
+          else
+            render json: { message: 'Ticket already used' }, status: :unprocessable_entity
+          end
+        else
+          render json: { message: 'Ticket or new reservation not found' }, status: :not_found
+        end
+      end
     end
   end
 end

@@ -111,6 +111,7 @@ Ticket.create!(reservation_id: 4, user_id: 2, ticket_type_id: 4) #ticket_id: 7
 Ticket.create!(reservation_id: 4, user_id: 3, ticket_type_id: 4) #ticket_id: 8
 
 
+
 #B League
 Reservation.create!(user_id: 2, ticket_agency_id: 2) #reservation_id: 5
 Ticket.create!(reservation_id: 5, user_id: 2, ticket_type_id: 5) #ticket_id: 9
@@ -119,3 +120,5 @@ Ticket.create!(reservation_id: 5, user_id: 3, ticket_type_id: 5) #ticket_id: 10
 Reservation.create!(user_id: 3, ticket_agency_id: 3) #reservation_id: 6
 Ticket.create!(reservation_id: 6, user_id: 2, ticket_type_id: 6) #ticket_id: 11
 Ticket.create!(reservation_id: 6, user_id: 3, ticket_type_id: 6) #ticket_id: 12
+
+Reservation.create!(user_id: 2, ticket_agency_id: 3) #reservation_id: 7
