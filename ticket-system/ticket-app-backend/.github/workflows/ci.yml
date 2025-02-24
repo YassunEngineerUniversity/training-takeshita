@@ -8,6 +8,9 @@ on:
 jobs:
   scan_ruby:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./ecs_test_rails
 
     steps:
       - name: Checkout code
@@ -24,6 +27,9 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./ecs_test_rails
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,6 +45,9 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./ecs_test_rails
 
     # services:
     #  redis:
