@@ -13,7 +13,6 @@ module Api
         start_time = params[:start_time]
         end_time = params[:end_time]
         performance_id = params[:performance_id]
-        binding.pry
 
         # reservations_dataをフィルタリング
         selected_reservations = @reservations.select do |reservation|
@@ -75,7 +74,7 @@ module Api
       end
 
       def show
-        render json: { message: 'Hello, world!' }, status: :ok
+        # render json: { message: 'Hello, world!' }, status: :ok
       end
 
       def create
