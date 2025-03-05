@@ -7,9 +7,9 @@
 #  performance_id :integer          not null
 #  venue_id       :integer          not null
 #  start_time     :datetime
+#  end_time       :datetime
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
-#  end_time       :datetime
 #
 # Indexes
 #
