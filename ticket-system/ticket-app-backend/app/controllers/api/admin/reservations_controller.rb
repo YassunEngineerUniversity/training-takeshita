@@ -7,35 +7,50 @@ module Api
         @reservations = Reservation.all
 
         # paramsから値を取得
-        performance_ids = params[:performance_id]
-        event_ids = params[:event_id]
-        ticket_agency_ids = params[:ticket_agency_id]
-        event_start_time = params[:event_start_time]
-        event_end_time = params[:event_end_time]
+        ticket_agency_ids = params[:ticket_agency_ids]
         not_used_ticket = params[:not_used_ticket]
+        event_ids = params[:event_ids]
+        start_time = params[:start_time]
+        end_time = params[:end_time]
+        performance_id = params[:performance_id]
+        binding.pry
 
         # reservations_dataをフィルタリング
         selected_reservations = @reservations.select do |reservation|
+          # 全てのフィルターがnilの場合、trueを返す
+          if (ticket_agency_ids.nil? && not_used_ticket.nil? && performance_id.nil? && event_ids.nil? && start_time.nil? && end_time.nil?)
+            next true
+          end
+
           # ticket_agency_idが一致するか
           ticket_agency_match = ticket_agency_ids.nil? || ticket_agency_ids.include?(reservation.ticket_agency_id)
           next false unless ticket_agency_match
 
           # not_used_ticketがtrueの場合、usedがfalseのチケットが存在するか
-          not_used_match = !not_used_ticket || Ticket.where(reservation_id: reservation.id, used: false).exists?
+          # @ticketsは複数存在する可能性があり、また０の場合もある
+          @tickets = Ticket.where(reservation_id: reservation.id)
+          not_used_match = @tickets.exists? && (not_used_ticket.nil? || @tickets.where(used: false).exists?)
           next false unless not_used_match
 
           # event_idが一致するか
-          event_match = event_ids.nil? || Ticket.where(reservation_id: reservation.id, event_id: event_ids).exists?
+          @ticket_type = TicketType.find_by(id: @tickets[0].ticket_type_id)
+          @event = Event.find_by(id: @ticket_type.event_id)
+          event_match = event_ids.nil? || event_ids.include?(@event.id)
           next false unless event_match
-          binding.pry
-          # # event_start_timeとevent_end_timeの範囲内か
-          time_match = (event_start_time.nil? || event_end_time.nil?) || 
-                      Ticket.where(reservation_id: reservation.id)
-                            .where('event_start_time >= ? AND event_end_time <= ?', event_start_time, event_end_time)
-                            .exists?
 
-          time_match
-          binding.pry
+          # # event.start_timeが指定された期間（start_time）の後か
+          start_time_match = start_time.nil? || @event.start_time >= start_time
+          next false unless start_time_match
+
+          # # event.end_timeが指定された期間（end_time）の前か
+          end_time_match = end_time.nil? || @event.end_time <= end_time
+          next false unless end_time_match
+
+          # performance_idが一致するか
+          performance_match = performance_id.nil? || @event.performance_id == performance_id
+          next false unless performance_match
+
+          true
         end
 
         reservations_data = selected_reservations.map do |reservation|
@@ -47,7 +62,7 @@ module Api
             ticket_user_name = User.find_by(id: ticket.user_id)&.name
             ticket.as_json.merge(
               ticket_user_name: ticket_user_name,
-              ticket_type: ticket_type,              
+              ticket_type: ticket_type,
             )
           end
 
