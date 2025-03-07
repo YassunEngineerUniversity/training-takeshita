@@ -6,9 +6,9 @@ module Api
     def index
       @feed_items = Post.joins('LEFT JOIN follow_users ON follow_users.followee_id = posts.user_id')
                         .joins(:user) # Add explicit join with users table
-                        .select('posts.*, users.name as user_name') # Select posts fields and user name
-                        .where('follow_users.follower_id = :user_id OR posts.user_id = :user_id', user_id: current_user.id)
                         .includes(:user, image_attachment: :blob)
+                        .where('follow_users.follower_id = :user_id OR posts.user_id = :user_id', user_id: current_user.id)
+                        .select('posts.*, users.name as user_name') # Select posts fields and user name
                         .distinct
                         .page(params[:page])
 
