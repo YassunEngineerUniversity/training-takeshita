@@ -34,9 +34,10 @@ User.create!(name: 'Chatani Tomohito',
 Promoter.create!(name: 'J League') #promoter_id: 1
 Promoter.create!(name: 'B League') #promoter_id: 2
 
-TicketAgency.create!(name: 'J League Ticket', api_key: '1234567890') #ticket_agency_id: 1  
-TicketAgency.create!(name: 'B League Ticket', api_key: '0987654321') #ticket_agency_id: 2
-TicketAgency.create!(name: 'チケットぴあ', api_key: '1111111111') #ticket_agency_id: 3
+TicketAgency.create!(name: 'Admin', api_key: '0000000000') #ticket_agency_id: 1  
+TicketAgency.create!(name: 'J League Ticket', api_key: '1234567890') #ticket_agency_id: 2 
+TicketAgency.create!(name: 'B League Ticket', api_key: '0987654321') #ticket_agency_id: 3
+TicketAgency.create!(name: 'チケットぴあ', api_key: '1111111111') #ticket_agency_id: 4
 
 Venue.create!(name: '新国立競技場') #venue_id: 1
 Venue.create!(name: '日産スタジアム') #venue_id: 2
@@ -94,31 +95,31 @@ TicketType.create!(name: '1階エンド', event_id: 6, entrance_id: 7) #ticket_t
 
 
 #J League
-Reservation.create!(user_id: 2, ticket_agency_id: 1) #reservation_id: 1
+Reservation.create!(user_id: 2, ticket_agency_id: 2) #reservation_id: 1
 Ticket.create!(reservation_id: 1, user_id: 2, ticket_type_id: 1) #ticket_id: 1
 Ticket.create!(reservation_id: 1, user_id: 3, ticket_type_id: 1) #ticket_id: 2
 
-Reservation.create!(user_id: 2, ticket_agency_id: 3) #reservation_id: 2
+Reservation.create!(user_id: 2, ticket_agency_id: 4) #reservation_id: 2
 Ticket.create!(reservation_id: 2, user_id: 2, ticket_type_id: 2) #ticket_id: 3
 Ticket.create!(reservation_id: 2, user_id: 3, ticket_type_id: 2) #ticket_id: 4
 
-Reservation.create!(user_id: 2, ticket_agency_id: 1) #reservation_id: 3
+Reservation.create!(user_id: 2, ticket_agency_id: 2) #reservation_id: 3
 Ticket.create!(reservation_id: 3, user_id: 2, ticket_type_id: 3) #ticket_id: 5
 Ticket.create!(reservation_id: 3, user_id: 3, ticket_type_id: 3) #ticket_id: 6
 
-Reservation.create!(user_id: 3, ticket_agency_id: 3) #reservation_id: 4
+Reservation.create!(user_id: 3, ticket_agency_id: 4) #reservation_id: 4
 Ticket.create!(reservation_id: 4, user_id: 2, ticket_type_id: 4) #ticket_id: 7
 Ticket.create!(reservation_id: 4, user_id: 3, ticket_type_id: 4) #ticket_id: 8
 
 
 
 #B League
-Reservation.create!(user_id: 2, ticket_agency_id: 2) #reservation_id: 5
+Reservation.create!(user_id: 2, ticket_agency_id: 3) #reservation_id: 5
 Ticket.create!(reservation_id: 5, user_id: 2, ticket_type_id: 5) #ticket_id: 9
 Ticket.create!(reservation_id: 5, user_id: 3, ticket_type_id: 5) #ticket_id: 10
 
-Reservation.create!(user_id: 3, ticket_agency_id: 3) #reservation_id: 6
+Reservation.create!(user_id: 3, ticket_agency_id: 4) #reservation_id: 6
 Ticket.create!(reservation_id: 6, user_id: 2, ticket_type_id: 6) #ticket_id: 11
 Ticket.create!(reservation_id: 6, user_id: 3, ticket_type_id: 6) #ticket_id: 12
 
-Reservation.create!(user_id: 2, ticket_agency_id: 3) #reservation_id: 7
+Reservation.create!(user_id: 2, ticket_agency_id: 4) #reservation_id: 7
