@@ -1,4 +1,4 @@
-チケット識別子（２０桁）
+<!-- チケット識別子（２０桁）
 (アルファベット3文字(固有))-(英数４文字)-(英数４文字)-(英数４文字)-(英数5文字（ランダム))
 |_______________________|
         興行主識別子
@@ -17,52 +17,40 @@ JLG-24J1-YMKA-1W15-DF39E
 興行識別子: JLG-24J1
 公演識別子: JLG-24J1-YMKA
 券種識別子: JLG-24J1-YMKA-1W15
-チケット識別子: JLG-24J1-YMKA-1W15-DF39E
+チケット識別子: JLG-24J1-YMKA-1W15-DF39E -->
 
 
-「興行主Aの興行で、プレイガイドBによって売られた特典付きのチケットの中で、2024年1月中に行われるイベントのもので、一度でも人に渡したことのあるものを検索する」
-ticket-er-diagram.drawioファイルで記述されているデータベース構造について、プレイガイドBによって売られた特典付きのチケットの中で、2024年1月中に行われるイベントのもので、一度でも人に渡したことのあるものを検索するためのSQLはどうなるか？
+検索の課題
+「J League」の興行で、チケットぴあによって売られた特典付きのチケットの中で、2025年2月中に行われるイベントのもので、一度でも人に渡したことのあるものを検索する
 
-以下のようなSQLクエリで、指定された条件のチケットを検索できます：
 ```sql
 SELECT DISTINCT t.*
 FROM tickets t
-JOIN events e ON t.event_id = e.id
 JOIN ticket_types tt ON t.ticket_type_id = tt.id
-JOIN ticket_transfers tf ON t.id = tf.ticket_id
-WHERE tt.seller_id = 'B'  -- プレイガイドBによって売られたチケット
-AND tt.has_bonus = true   -- 特典付きチケット
-AND e.event_date >= '2024-01-01'  -- 2024年1月中のイベント
-AND e.event_date <= '2024-01-31'
-AND tf.transfer_date IS NOT NULL;  -- 一度でも人に渡したことのあるチケット
+JOIN events e ON tt.event_id = e.id
+JOIN performances p ON e.performance_id = p.id
+JOIN promoters pr ON p.promoter_id = pr.id
+JOIN reservations r ON t.reservation_id = r.id
+JOIN ticket_agencies ta ON r.ticket_agency_id = ta.id
+JOIN ticket_transfer_histories tth ON t.id = tth.ticket_id
+JOIN ticket_type_perks ttp ON tt.id = ttp.ticket_type_id
+JOIN perks pk ON ttp.perk_id = pk.id
+WHERE pr.name = 'J League'
+AND ta.name = 'チケットぴあ'
+AND e.start_time >= '2025-02-01 00:00:00'
+AND e.end_time <= '2025-02-28 23:59:59'
+AND tth.id IS NOT NULL;
 ```
-このSQLクエリの説明：
-ticketsテーブルを基準に、関連するevents、ticket_types、ticket_transfersテーブルを結合します
-以下の条件でフィルタリングしています：
-ticket_types.seller_id = 'B' でプレイガイドBのチケットに限定
-ticket_types.has_bonus = true で特典付きチケットに限定
-events.event_date で2024年1月中のイベントに限定
-ticket_transfers.transfer_date IS NOT NULL で譲渡履歴のあるチケットに限定
-DISTINCTを使用して重複を除外しています（同じチケットが複数回譲渡されている場合に備えて）
 
 
-
-「公演Cのチケットのうち、券種Aで、かつまだ消し込みされていないものがある「チケットを閲覧する単位」の数」
-→チケットIDが'JLG-24J1-YMKA-1W15'から始まるIDで、かつ使用されていないチケットを含む予約の数を取得するSQLを記述せよ。
-
-以下のSQLクエリで、指定された条件の予約数を取得できます：
+「第1節東京Ｖvs清水」のチケットのうち、券種「メインSS」で、かつまだ消し込みされていないものがある予約の数
 ```sql
-SELECT COUNT(DISTINCT r.id) 
-FROM reservations r
-JOIN tickets t ON r.id = t.reservation_id
-WHERE t.ticket_id LIKE 'JLG-24J1-YMKA-1W15%'
-AND t.is_used = false;
+SELECT COUNT(DISTINCT reservations.id)
+FROM reservations
+JOIN tickets ON tickets.reservation_id = reservations.id
+JOIN ticket_types ON tickets.ticket_type_id = ticket_types.id
+JOIN events ON ticket_types.event_id = events.id
+WHERE events.name = '第1節東京Ｖvs清水'
+AND ticket_types.name = 'メインSS'
+AND tickets.used = false;
 ```
-このSQLクエリの説明：
-reservationsテーブルとticketsテーブルを結合します
-以下の条件でフィルタリングしています：
-ticket_id LIKE 'JLG-24J1-YMKA-1W15%' で指定されたIDパターンに一致するチケット
-is_used = false で未使用のチケット
-COUNT(DISTINCT r.id) で予約の数をカウント
-DISTINCTを使用することで、同じ予約内に複数の該当チケットがある場合でも1つとしてカウント
-このクエリは、指定されたチケットIDパターンに一致し、かつ未使用のチケットを含む予約の総数を返します。
