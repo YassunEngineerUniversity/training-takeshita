@@ -12,8 +12,8 @@ Rails.application.routes.draw do
     resources :users
     resources :account_activations, only: [:edit]
     resources :password_resets,     only: %i[create update]
-    resources :reservations, only: %i[index show create]
-    resources :tickets, only: %i[index show create]
+    resources :reservations, only: %i[index]
+    resources :tickets, only: %i[index]
     
     namespace :admin do
       get    '/login',   to: 'sessions#index'
