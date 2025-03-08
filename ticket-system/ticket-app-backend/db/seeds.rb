@@ -23,8 +23,8 @@ User.create!(name: 'Takeshita Yoshiki',
              activated: true,
              activated_at: Time.zone.now)
 
-User.create!(name: 'Chatani Tomohito',
-             email: 'tomohito@example.com',
+User.create!(name: 'Test User',
+             email: 'test@example.com',
              password: 'foobarbaz',
              password_confirmation: 'foobarbaz',
              admin: false,
