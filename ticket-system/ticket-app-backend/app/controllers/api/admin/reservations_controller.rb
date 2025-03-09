@@ -59,6 +59,7 @@ module Api
           next false unless end_time_match
 
           # performance_idが一致するか
+          performance_id = performance_id.to_i if performance_id.present? && performance_id.is_a?(String)
           performance_match = performance_id.nil? || @event.performance_id == performance_id
           next false unless performance_match
 

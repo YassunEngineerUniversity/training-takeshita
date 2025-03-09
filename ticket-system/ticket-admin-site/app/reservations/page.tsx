@@ -45,6 +45,7 @@ export default function ReservationsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [includeNotUsedTickets, setIncludeNotUsedTickets] = useState(false)
+  const [performanceId, setPerformanceId] = useState<string>('')
   const [eventIds, setEventIds] = useState<string[]>([''])
   const [ticketAgencyIds, setTicketAgencyIds] = useState<string[]>([''])
 
@@ -94,11 +95,21 @@ export default function ReservationsPage() {
         .filter(id => !isNaN(id) && Number.isInteger(id) && id > 0)
         .sort((a, b) => a - b) // 昇順にソート
 
+      // 興行IDが有効な数値かチェック
+      const validPerformanceId = performanceId.trim() !== '' && !isNaN(Number(performanceId)) && Number(performanceId) > 0 
+        ? Number(performanceId) 
+        : null;
+
       // クエリパラメーターを構築
       const params = new URLSearchParams();
       
       if (includeNotUsedTickets) {
         params.append('not_used_ticket', 'true');
+      }
+      
+      // 興行IDを追加
+      if (validPerformanceId) {
+        params.append('performance_id', validPerformanceId.toString());
       }
       
       // 各イベントIDを個別のパラメーターとして追加
@@ -133,7 +144,7 @@ export default function ReservationsPage() {
 
   useEffect(() => {
     fetchReservations()
-  }, [includeNotUsedTickets, eventIds, ticketAgencyIds])
+  }, [includeNotUsedTickets, performanceId, eventIds, ticketAgencyIds])
 
   if (isLoading) {
     return <div className="container mx-auto px-4 py-8">読み込み中...</div>
@@ -157,6 +168,20 @@ export default function ReservationsPage() {
             <Label htmlFor="includeNotUsedTickets">
               未使用のチケットを含む予約
             </Label>
+          </div>
+          
+          <div className="flex flex-col gap-2">
+            <div className="text-sm font-medium">興行ID</div>
+            <div className="flex items-center">
+              <Input
+                type="number"
+                placeholder="興行ID"
+                value={performanceId}
+                onChange={(e) => setPerformanceId(e.target.value)}
+                className="w-24"
+                min="1"
+              />
+            </div>
           </div>
           
           <div className="flex flex-col gap-2">
