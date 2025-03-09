@@ -27,6 +27,15 @@ interface TicketType {
   updated_at: string
 }
 
+interface Perk {
+  perk_id: number
+  perk_name: string
+  perk_active: boolean
+  perk_valid_from: string
+  perk_valid_until: string
+  perk_used: boolean
+}
+
 interface Ticket {
   id: number
   reservation_id: number
@@ -37,6 +46,7 @@ interface Ticket {
   updated_at: string
   ticket_user_name: string
   ticket_type: TicketType
+  perks_data?: Perk[]
 }
 
 interface Reservation {
@@ -169,6 +179,52 @@ export default function ReservationsPage() {
       setIsLoading(false)
     }
   }
+
+  // チケットを使用する関数
+  const handleUseTicket = async (ticketId: number) => {
+    try {
+      const response = await fetch(`/api/admin/tickets/${ticketId}/use`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('チケットの使用に失敗しました');
+      }
+
+      // 成功したら予約データを再取得
+      fetchReservations();
+    } catch (error) {
+      console.error('チケット使用エラー:', error);
+      setError(error instanceof Error ? error.message : 'チケットの使用中にエラーが発生しました');
+    }
+  };
+
+  // 特典を使用する関数
+  const handleUsePerk = async (ticketId: number, perkId: number) => {
+    try {
+      const response = await fetch(`/api/admin/tickets/${ticketId}/perks/${perkId}/use`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('特典の使用に失敗しました');
+      }
+
+      // 成功したら予約データを再取得
+      fetchReservations();
+    } catch (error) {
+      console.error('特典使用エラー:', error);
+      setError(error instanceof Error ? error.message : '特典の使用中にエラーが発生しました');
+    }
+  };
 
   useEffect(() => {
     fetchReservations()
@@ -378,10 +434,57 @@ export default function ReservationsPage() {
                               <p><span className="font-medium">チケット種別:</span> {ticket.ticket_type.name}</p>
                               <p><span className="font-medium">利用者名:</span> {ticket.ticket_user_name}</p>
                             </div>
-                            <Badge variant={ticket.used ? "secondary" : "default"}>
-                              {ticket.used ? "使用済み" : "未使用"}
-                            </Badge>
+                            <div className="flex items-center gap-2">
+                              <Badge variant={ticket.used ? "secondary" : "default"}>
+                                {ticket.used ? "使用済み" : "未使用"}
+                              </Badge>
+                              {!ticket.used && (
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => handleUseTicket(ticket.id)}
+                                >
+                                  使用する
+                                </Button>
+                              )}
+                            </div>
                           </div>
+                          
+                          {ticket.perks_data && ticket.perks_data.length > 0 && (
+                            <div className="mt-3 pt-3 border-t">
+                              <p className="text-sm text-gray-500 mb-2">特典情報</p>
+                              <div className="space-y-2">
+                                {ticket.perks_data.map((perk) => (
+                                  <div
+                                    key={perk.perk_id}
+                                    className="border p-3 rounded-lg"
+                                  >
+                                    <div className="flex items-center justify-between mb-2">
+                                      <p className="font-medium">{perk.perk_name}</p>
+                                      <div className="flex items-center gap-2">
+                                        <Badge variant={perk.perk_used ? "secondary" : perk.perk_active ? "default" : "outline"}>
+                                          {perk.perk_used ? "使用済み" : perk.perk_active ? "利用可能" : "期間外"}
+                                        </Badge>
+                                        {!perk.perk_used && perk.perk_active && (
+                                          <Button 
+                                            variant="outline" 
+                                            size="sm"
+                                            onClick={() => handleUsePerk(ticket.id, perk.perk_id)}
+                                          >
+                                            使用する
+                                          </Button>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <p className="text-sm text-gray-500">
+                                      有効期間: {new Date(perk.perk_valid_from).toLocaleDateString('ja-JP')} ～{' '}
+                                      {new Date(perk.perk_valid_until).toLocaleDateString('ja-JP')}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>

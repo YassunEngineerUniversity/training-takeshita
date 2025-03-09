@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 
 interface Perk {
   perk_id: number
@@ -36,28 +37,74 @@ export default function TicketsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchTickets = async () => {
-      try {
-        const response = await fetch('/api/admin/tickets', {
-          headers: {
-            'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
-          },
-        })
+  const fetchTickets = async () => {
+    try {
+      const response = await fetch('/api/admin/tickets', {
+        headers: {
+          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+        },
+      })
 
-        if (!response.ok) {
-          throw new Error('チケットデータの取得に失敗しました')
-        }
-
-        const data = await response.json()
-        setTickets(data)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'チケットデータの取得中にエラーが発生しました')
-      } finally {
-        setIsLoading(false)
+      if (!response.ok) {
+        throw new Error('チケットデータの取得に失敗しました')
       }
-    }
 
+      const data = await response.json()
+      setTickets(data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'チケットデータの取得中にエラーが発生しました')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // チケットを使用する関数
+  const handleUseTicket = async (ticketId: number) => {
+    try {
+      const response = await fetch(`/api/admin/tickets/${ticketId}/use`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('チケットの使用に失敗しました');
+      }
+
+      // 成功したらチケットデータを再取得
+      fetchTickets();
+    } catch (error) {
+      console.error('チケット使用エラー:', error);
+      setError(error instanceof Error ? error.message : 'チケットの使用中にエラーが発生しました');
+    }
+  };
+
+  // 特典を使用する関数
+  const handleUsePerk = async (ticketId: number, perkId: number) => {
+    try {
+      const response = await fetch(`/api/admin/tickets/${ticketId}/perks/${perkId}/use`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('特典の使用に失敗しました');
+      }
+
+      // 成功したらチケットデータを再取得
+      fetchTickets();
+    } catch (error) {
+      console.error('特典使用エラー:', error);
+      setError(error instanceof Error ? error.message : '特典の使用中にエラーが発生しました');
+    }
+  };
+
+  useEffect(() => {
     fetchTickets()
   }, [])
 
@@ -78,9 +125,20 @@ export default function TicketsPage() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>{ticket.event_name}</CardTitle>
-                <Badge variant={ticket.used ? "secondary" : "default"}>
-                  {ticket.used ? "使用済み" : "未使用"}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Badge variant={ticket.used ? "secondary" : "default"}>
+                    {ticket.used ? "使用済み" : "未使用"}
+                  </Badge>
+                  {!ticket.used && (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleUseTicket(ticket.id)}
+                    >
+                      使用する
+                    </Button>
+                  )}
+                </div>
               </div>
             </CardHeader>
             <CardContent>
@@ -121,9 +179,20 @@ export default function TicketsPage() {
                         >
                           <div className="flex items-center justify-between mb-2">
                             <p className="font-medium">{perk.perk_name}</p>
-                            <Badge variant={perk.perk_used ? "secondary" : perk.perk_active ? "default" : "outline"}>
-                              {perk.perk_used ? "使用済み" : perk.perk_active ? "利用可能" : "期間外"}
-                            </Badge>
+                            <div className="flex items-center gap-2">
+                              <Badge variant={perk.perk_used ? "secondary" : perk.perk_active ? "default" : "outline"}>
+                                {perk.perk_used ? "使用済み" : perk.perk_active ? "利用可能" : "期間外"}
+                              </Badge>
+                              {!perk.perk_used && perk.perk_active && (
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => handleUsePerk(ticket.id, perk.perk_id)}
+                                >
+                                  使用する
+                                </Button>
+                              )}
+                            </div>
                           </div>
                           <p className="text-sm text-gray-500">
                             有効期間: {new Date(perk.perk_valid_from).toLocaleDateString('ja-JP')} ～{' '}
