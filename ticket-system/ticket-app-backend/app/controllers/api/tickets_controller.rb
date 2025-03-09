@@ -42,13 +42,5 @@ module Api
       render json: tickets_data, status: :ok
     end
 
-    def show
-      render json: { message: 'Hello, world!' }, status: :ok
-    end
-
-    def create
-      # render json: { message: 'Hello, world!' }, status: :ok
-    end
-
   end
 end
