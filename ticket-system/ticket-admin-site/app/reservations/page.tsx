@@ -16,6 +16,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 
 interface TicketType {
@@ -69,6 +78,9 @@ export default function ReservationsPage() {
   const [ticketAgencyIds, setTicketAgencyIds] = useState<string[]>([''])
   const [startDate, setStartDate] = useState<Date | undefined>(undefined)
   const [endDate, setEndDate] = useState<Date | undefined>(undefined)
+  const [transferReservationId, setTransferReservationId] = useState<string>('')
+  const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null)
+  const [isTransferDialogOpen, setIsTransferDialogOpen] = useState(false)
 
   const handleAddEventId = () => {
     setEventIds([...eventIds, ''])
@@ -224,6 +236,60 @@ export default function ReservationsPage() {
       console.error('特典使用エラー:', error);
       setError(error instanceof Error ? error.message : '特典の使用中にエラーが発生しました');
     }
+  };
+
+  // チケットを移行する関数
+  const handleTransferTicket = async (ticketId: number) => {
+    try {
+      if (!transferReservationId || isNaN(Number(transferReservationId)) || Number(transferReservationId) <= 0) {
+        throw new Error('有効な移行先予約IDを入力してください');
+      }
+
+      // チケットが使用済みかどうかを確認
+      const ticket = reservations
+        .flatMap(reservation => reservation.tickets_data)
+        .find(ticket => ticket.id === ticketId);
+
+      if (!ticket) {
+        throw new Error('チケットが見つかりません');
+      }
+
+      if (ticket.used) {
+        throw new Error('使用済みのチケットは移行できません');
+      }
+
+      const response = await fetch(`/api/admin/tickets/${ticketId}/transfer`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+        },
+        body: JSON.stringify({
+          new_reservation_id: transferReservationId
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('チケットの移行に失敗しました');
+      }
+
+      // 成功したら予約データを再取得
+      fetchReservations();
+      // ダイアログを閉じる
+      setIsTransferDialogOpen(false);
+      // 入力をリセット
+      setTransferReservationId('');
+      setSelectedTicketId(null);
+    } catch (error) {
+      console.error('チケット移行エラー:', error);
+      setError(error instanceof Error ? error.message : 'チケットの移行中にエラーが発生しました');
+    }
+  };
+
+  // 移行ダイアログを開く関数
+  const openTransferDialog = (ticketId: number) => {
+    setSelectedTicketId(ticketId);
+    setIsTransferDialogOpen(true);
   };
 
   useEffect(() => {
@@ -402,11 +468,53 @@ export default function ReservationsPage() {
           </div>
         </div>
       </div>
+
+      <Dialog open={isTransferDialogOpen} onOpenChange={setIsTransferDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>チケット移行</DialogTitle>
+            <DialogDescription>
+              チケット #{selectedTicketId} を別の予約に移行します。
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="transferReservationId" className="text-right">
+                移行先予約ID
+              </Label>
+              <Input
+                id="transferReservationId"
+                type="number"
+                value={transferReservationId}
+                onChange={(e) => setTransferReservationId(e.target.value)}
+                className="col-span-3"
+                min="1"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => setIsTransferDialogOpen(false)}
+            >
+              キャンセル
+            </Button>
+            <Button 
+              onClick={() => selectedTicketId && handleTransferTicket(selectedTicketId)}
+            >
+              移行する
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <div className="grid gap-6">
         {reservations.map((reservation) => (
           <Card key={reservation.id}>
             <CardHeader>
-              <CardTitle>予約 #{reservation.id}</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle>予約 #{reservation.id}</CardTitle>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -445,6 +553,15 @@ export default function ReservationsPage() {
                                   onClick={() => handleUseTicket(ticket.id)}
                                 >
                                   使用する
+                                </Button>
+                              )}
+                              {!ticket.used && (
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => openTransferDialog(ticket.id)}
+                                >
+                                  移行
                                 </Button>
                               )}
                             </div>
