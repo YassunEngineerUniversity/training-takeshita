@@ -7,7 +7,16 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { PlusCircle, X } from "lucide-react"
+import { PlusCircle, X, CalendarIcon } from "lucide-react"
+import { Calendar } from "@/components/ui/calendar"
+import { format } from "date-fns"
+import { ja } from "date-fns/locale"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
 
 interface TicketType {
   id: number
@@ -48,6 +57,8 @@ export default function ReservationsPage() {
   const [performanceId, setPerformanceId] = useState<string>('')
   const [eventIds, setEventIds] = useState<string[]>([''])
   const [ticketAgencyIds, setTicketAgencyIds] = useState<string[]>([''])
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined)
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined)
 
   const handleAddEventId = () => {
     setEventIds([...eventIds, ''])
@@ -78,6 +89,12 @@ export default function ReservationsPage() {
     newTicketAgencyIds[index] = value
     setTicketAgencyIds(newTicketAgencyIds)
   }
+
+  // 日付を "YYYY-MM-DD HH:MM:SS" 形式にフォーマットする関数
+  const formatDateToQueryParam = (date: Date | undefined): string | null => {
+    if (!date) return null;
+    return format(date, "yyyy-MM-dd HH:mm:ss");
+  };
 
   const fetchReservations = async () => {
     try {
@@ -122,6 +139,17 @@ export default function ReservationsPage() {
         params.append('ticket_agency_ids[]', id.toString());
       });
 
+      // 開始日時と終了日時を追加
+      const formattedStartDate = formatDateToQueryParam(startDate);
+      if (formattedStartDate) {
+        params.append('start_time', formattedStartDate);
+      }
+
+      const formattedEndDate = formatDateToQueryParam(endDate);
+      if (formattedEndDate) {
+        params.append('end_time', formattedEndDate);
+      }
+
       const response = await fetch(`/api/admin/reservations?${params.toString()}`, {
         method: 'GET',
         headers: {
@@ -144,7 +172,7 @@ export default function ReservationsPage() {
 
   useEffect(() => {
     fetchReservations()
-  }, [includeNotUsedTickets, performanceId, eventIds, ticketAgencyIds])
+  }, [includeNotUsedTickets, performanceId, eventIds, ticketAgencyIds, startDate, endDate])
 
   if (isLoading) {
     return <div className="container mx-auto px-4 py-8">読み込み中...</div>
@@ -259,6 +287,61 @@ export default function ReservationsPage() {
                   )}
                 </div>
               ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <div className="text-sm font-medium">開催期間</div>
+            <div className="flex items-center gap-2">
+              <div className="grid gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[140px] justify-start text-left font-normal",
+                        !startDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {startDate ? format(startDate, "yyyy/MM/dd", { locale: ja }) : "開始日"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={startDate}
+                      onSelect={setStartDate}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <span>〜</span>
+              <div className="grid gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[140px] justify-start text-left font-normal",
+                        !endDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {endDate ? format(endDate, "yyyy/MM/dd", { locale: ja }) : "終了日"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={endDate}
+                      onSelect={setEndDate}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
           </div>
         </div>
